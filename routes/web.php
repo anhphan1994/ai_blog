@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlogPostController;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\Auth\AuthenticatorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view(view: 'welcome');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return view(view: 'welcome');
+    })->name('home');
+    Route::resource('blog-posts', BlogPostController::class);
+    Route::resource('home', BlogPostController::class);
+    Route::resource('dashboard', BlogPostController::class);
 });
 
+Route::auth();
 
 Route::resource('blog-posts', BlogPostController::class);
 
@@ -32,7 +40,11 @@ Route::prefix('post')->group(function () {
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
 });
+//Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
+Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
+//Route::post('/login', [AuthenticatorController::class, 'loginValidate'])->name('auth.login');
+//Route::get('/login', [AuthenticatorController::class, 'signin'])->name('login');
 
 Route::prefix('ajax-call-ai')->group(function () {
-   
 });
+
