@@ -13,9 +13,9 @@ class BlogPostService
         $this->repository = $repository;
     }
 
-    public function getAllPosts()
+    public function getAllPosts($params = [])
     {
-        return $this->repository->getAll();
+        return $this->repository->getAll($params);
     }
 
     public function getPostById($id)

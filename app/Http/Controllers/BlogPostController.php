@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\BlogPostService;
+use Auth;
 use Illuminate\Http\Request;
 
 class BlogPostController extends Controller
@@ -14,30 +15,23 @@ class BlogPostController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function dashboard(Request $request)
     {
-        return response()->json($this->service->getAllPosts());
+        $platform_id = $request->get('platform_id') ?? null;
+        return view('blog-posts.index', compact('platform_id'));
     }
 
-    public function show($id)
+    public function ajaxListPost(Request $request)
     {
-        return response()->json($this->service->getPostById($id));
-    }
+        if ($request->ajax()) {
+            $platform_id = $request->get('platform_id') ?? null;
+            $user_id = Auth::id();
 
-    public function store(Request $request)
-    {
-        $data = $request->all();
-        return response()->json($this->service->createPost($data));
-    }
+            $posts = $this->service->getAllPosts(['platform_id' => $platform_id, 'user_id' => $user_id]);
 
-    public function update(Request $request, $id)
-    {
-        $data = $request->all();
-        return response()->json($this->service->updatePost($id, $data));
-    }
+            $view = view('partials.ajax.list_post', compact('posts'))->render();
 
-    public function destroy($id)
-    {
-        return response()->json($this->service->deletePost($id));
+            return response()->json(['html' => $view]);
+        }
     }
 }

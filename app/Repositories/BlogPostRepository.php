@@ -15,7 +15,7 @@ class BlogPostRepository implements BlogPostRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAll()
+    public function getAll($params = [])
     {
         Log::info('Fetching all blog posts');
         return $this->model->all();

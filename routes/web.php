@@ -20,3 +20,8 @@ Route::get('/', function () {
 
 
 Route::resource('blog-posts', BlogPostController::class);
+
+Route::prefix('post')->group(function () {
+    Route::get('/dashboard', [BlogPostController::class, 'dashboard'])->name('post.dashboard');
+    Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
+});
