@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('content');
             $table->text('short_content');
             $table->unsignedBigInteger('user_id');
-            $table->timestamp('edited_at');
+            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });
