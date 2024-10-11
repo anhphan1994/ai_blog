@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('short_content');
             $table->string('status')->default('draft');
             $table->unsignedBigInteger('user_id');
-            $table->timestamps('published_at')->nullable();
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

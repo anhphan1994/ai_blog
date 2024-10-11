@@ -13,28 +13,37 @@ class BlogPostService
         $this->repository = $repository;
     }
 
-    public function getAllPosts()
+    public function getAllPosts($params = [])
     {
-        return $this->repository->getAll();
+        return $this->repository->getAll($params);
     }
 
-    public function getPostById($id)
+    public function getPostById($id = null)
     {
         return $this->repository->getById($id);
     }
 
-    public function createPost(array $data)
+    public function createPost(array $data = [])
     {
         return $this->repository->create($data);
     }
 
-    public function updatePost($id, array $data)
+    public function updatePost($id = null, array $data = [])
     {
         return $this->repository->update($id, $data);
     }
 
-    public function deletePost($id)
+    public function deletePost($id = null)
     {
         return $this->repository->delete($id);
+    }
+
+    public function deleteMultiPosts($ids = [])
+    {
+        $result = [];
+        foreach ($ids as $id) {
+            $result[] = $this->deletePost($id);
+        }
+        return $result;
     }
 }
