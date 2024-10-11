@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('platform_accounts', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->unsignedBigInteger('user_id');
             $table->string('platform_name');
             $table->string('username');
             $table->string('api_key');
