@@ -35,6 +35,8 @@ Route::prefix('post')->group(function () {
     Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
 });
 
-Route::prefix('ajax-call-ai')->group(function () {
-   
+Route::prefix('ajax-call-ai')->group(function (): void {
+    Route::get('/generate-blog-content', [AIController::class, 'generateBlogContent'])->name('ai.generateBlogContent');
+    Route::get('/generate-blog-title', [AIController::class, 'generateBlogTitle'])->name('ai.generateBlogTitle');
+    Route::get('/generate-blog-outline', [AIController::class, 'generateBlogOutline'])->name('ai.generateBlogOutline');
 });
