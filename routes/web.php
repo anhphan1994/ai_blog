@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AIController;
 use App\Http\Controllers\BlogPostController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,7 @@ Route::prefix('post')->group(function () {
     //ajax
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
+    Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
 });
 
 Route::prefix('ajax-call-ai')->group(function () {
