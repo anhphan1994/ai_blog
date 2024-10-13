@@ -12,6 +12,9 @@ class AIService
 {
     public function generateBlogContent($short_desc, $keyword, $style, $num_of_section)
     {
+        // Cache::forget('first_response');
+        // Cache::forget('second_response');
+        // Cache::forget('content');
        
         $first_prompt = BlogPrompt::generateFirstPrompt($short_desc, $keyword, $style, $num_of_section);
 

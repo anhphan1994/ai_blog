@@ -235,7 +235,7 @@ class AIController extends Controller
     public function generateBlogContent(Request $request)
     {
         set_time_limit(0);
-
+        $time_start = microtime(true);
         $short_desc_test = "APEXの競技シーンとヴァロラントの競技シーンの比較";
         $keyword_test = "Laz選手とImperial hal選手";
         $style_test = "同じプロゲーマーとしての目線";
@@ -251,8 +251,8 @@ class AIController extends Controller
         }
 
         $content = $this->service->generateBlogContent($short_desc, $keyword, $style, $num_of_section);
-
-        return response()->json(data: ['content' => $content]);
+        $time_end = microtime(true);
+        return response()->json(data: ['content' => $content, 'time' => $time_end - $time_start]);
     }
 
     public function generateBlogTitle(Request $request)
