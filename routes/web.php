@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AIController;
 use App\Http\Controllers\BlogPostController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Auth\AuthenticatorController;
@@ -39,12 +40,15 @@ Route::prefix('post')->group(function () {
     //ajax
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
+    Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
 //Route::post('/login', [AuthenticatorController::class, 'loginValidate'])->name('auth.login');
 //Route::get('/login', [AuthenticatorController::class, 'signin'])->name('login');
 
-Route::prefix('ajax-call-ai')->group(function () {
+Route::prefix('ajax-call-ai')->group(function (): void {
+    Route::get('/generate-blog-content', [AIController::class, 'generateBlogContent'])->name('ai.generateBlogContent');
+    Route::get('/generate-blog-title', [AIController::class, 'generateBlogTitle'])->name('ai.generateBlogTitle');
+    Route::get('/generate-blog-outline', [AIController::class, 'generateBlogOutline'])->name('ai.generateBlogOutline');
 });
-

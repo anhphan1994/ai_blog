@@ -104,4 +104,5 @@ class BlogPostController extends Controller
             return response()->json(['html' => $view]);
         }
     }
+
 }
