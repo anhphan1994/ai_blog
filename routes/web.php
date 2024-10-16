@@ -17,18 +17,20 @@ use \App\Http\Controllers\Auth\AuthenticatorController;
 */
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return view(view: 'welcome');
-    })->name('home');
-    Route::resource('blog-posts', BlogPostController::class);
-    Route::resource('home', BlogPostController::class);
-    Route::resource('dashboard', BlogPostController::class);
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/', function () {
+//         return redirect()->route('post.dashboard');
+//     })->name('home');
+//     Route::resource('blog-posts', BlogPostController::class);
+//     Route::resource('home', BlogPostController::class);
+//     Route::resource('dashboard', BlogPostController::class);
+// });
 
-Route::auth();
+// Route::auth();
 
-Route::resource('blog-posts', BlogPostController::class);
+Route::get('/', function () {
+    return redirect()->route('post.dashboard');
+})->name('home');
 
 Route::prefix('post')->group(function () {
     Route::get('/dashboard', [BlogPostController::class, 'dashboard'])->name('post.dashboard');
@@ -52,3 +54,9 @@ Route::prefix('ajax-call-ai')->group(function (): void {
     Route::get('/generate-blog-title', [AIController::class, 'generateBlogTitle'])->name('ai.generateBlogTitle');
     Route::get('/generate-blog-outline', [AIController::class, 'generateBlogOutline'])->name('ai.generateBlogOutline');
 });
+
+// return redirect()->route('error.page')->with('error', 'Unable to load dashboard');
+
+Route::get('/error', function () {
+    return view('errors.error', ['error' => 'Unable to load page']);
+})->name('error.page');

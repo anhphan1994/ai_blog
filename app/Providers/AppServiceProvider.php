@@ -28,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $helperPath = app_path('Helpers/Common.php');
+        
+        if (file_exists($helperPath)) {
+            require_once $helperPath;
+        }
     }
 }

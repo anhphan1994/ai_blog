@@ -18,9 +18,16 @@ class BlogPostController extends Controller
 
     public function dashboard(Request $request)
     {
-        $platform_id = $request->get('platform_id') ?? null;
-        Log::info('Dashboard accessed', ['platform_id' => $platform_id]);
-        return view('blog_posts.index', compact('platform_id'));
+        try {
+            $platform_id = $request->get('platform_id') ?? null;
+            $blog_posts = $this->service->getAllPosts(['platform_id' => $platform_id]);
+            trackInfo('Loading blog posts for platform', ['platform_id' => $platform_id]);
+            return view('blog_posts.list', compact('platform_id', 'blog_posts'));
+        } catch (\Exception $e) {
+            trackError('Error loading dashboard', ['error' => $e->getMessage()]);
+            return redirect()->route('error.page')->with('error', 'Unable to load dashboard');
+        }
+        
     }
 
     public function ajaxListPost(Request $request)

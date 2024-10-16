@@ -20,18 +20,19 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     {
         $query = $this->model->query();
         if (isset($params['platform_id']) && !empty($params['platform_id'])) {
-            $query->where('platform_id', $params['platform_id']);
+            $query->join('post_platforms AS pp', 'pp.blog_post_id', '=', 'blog_posts.id');
+            $query->where('pp.platform_account_id', $params['platform_id']);
         }
         if (isset($params['user_id']) && !empty($params['user_id'])) {
-            $query->where('user_id', $params['user_id']);
+            $query->where('blog_posts.user_id', $params['user_id']);
         }
         if (isset($params['status']) && !empty($params['status'])) {
-            $query->where('status', $params['status']);
+            $query->where('blog_posts.status', $params['status']);
         }
         if (isset($params['search']) && !empty($params['search'])) {
-            $query->where('title', 'like', '%' . $params['search'] . '%');
+            $query->where('blog_posts.title', 'like', '%' . $params['search'] . '%');
         }
-        $query->orderBy('id', 'desc');
+        $query->orderBy('blog_posts.id', 'desc');
 
         return $query->paginate($this->perPage);
     }

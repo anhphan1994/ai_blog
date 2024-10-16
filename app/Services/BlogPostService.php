@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Repositories\BlogPostRepository;
+use App\Repositories\Interfaces\BlogPostRepositoryInterface;
 
 class BlogPostService
 {
     protected $repository;
 
-    public function __construct(BlogPostRepository $repository)
+    public function __construct(BlogPostRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }

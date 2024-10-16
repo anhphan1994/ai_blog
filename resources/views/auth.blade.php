@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" >
-@include('layout.header')
+@include('layouts.header')
 
 <body>
     @yield('content')
