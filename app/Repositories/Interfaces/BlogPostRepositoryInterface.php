@@ -11,4 +11,5 @@ interface BlogPostRepositoryInterface
     public function delete($id);
     public function getAllStatus();
     public function getAllPeriod();
+    public function duplicate($id);
 }

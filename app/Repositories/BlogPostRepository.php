@@ -100,4 +100,25 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     {
         return $this->model->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as period')->distinct()->get()->pluck('period');
     }
+
+    public function duplicate($id)
+    {
+        $post = $this->model->findOrFail($id);
+        $data = $post->toArray();
+        unset($data['id']);
+        $data['title'] = $data['title'] . ' (copy)';
+        $data['status'] = 'draft';
+        $duplicatedPost = $this->model->create($data);
+
+        $this->createHistory([
+            'blog_post_id' => $duplicatedPost->id,
+            'title' => $duplicatedPost->title,
+            'content' => $duplicatedPost->content,
+            'short_content' => $duplicatedPost->short_content,
+            'status' => $duplicatedPost->status,
+            'user_id' => $duplicatedPost->user_id,
+        ]);
+
+        return $duplicatedPost;
+    }
 }

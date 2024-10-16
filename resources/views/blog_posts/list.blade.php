@@ -34,6 +34,10 @@
         var URL_GET_BLOG_POSTS = "{{ route('post.ajax.list') }}";
         var URL_GET_STATUS_FILTER = "{{ route('post.ajax.status') }}";
         var URL_GET_PERIOD_FILTER = "{{ route('post.ajax.period') }}";
+        var URL_SHOW_POST = "{{ route('post.edit', '') }}";
+        var URL_DUPPLICATE_POST = "{{ route('post.duplicate', '') }}";
+        var URL_DELETE_POST = "{{ route('post.ajax.delete', '') }}";
+
         var status, period;
 
         $(function() {
@@ -45,36 +49,64 @@
             getPeriodFilter();
 
             $(document).on('click', '#status_filter ul li', function() {
-            var statusText = $(this).text();
-            $('#status_filter span').text(statusText);
-            status = $(this).data('status_code');
-            console.log(status);
-            getBlogPosts();
+                var statusText = $(this).text();
+                $('#status_filter span').text(statusText);
+                status = $(this).data('status_code');
+                console.log(status);
+                getBlogPosts();
             });
 
             $(document).on('click', '#period_filter ul li', function() {
-            var periodText = $(this).text();
-            $('#period_filter span').text(periodText);
-            period = $(this).data('period');
-            console.log(period);
-            getBlogPosts();
+                var periodText = $(this).text();
+                $('#period_filter span').text(periodText);
+                period = $(this).data('period');
+                console.log(period);
+                getBlogPosts();
             });
+
+            $(document).on('click', '.action li.show', function() {
+                var id = $(this).data('id');
+                window.location.href = URL_SHOW_POST + '/' + id;
+            });
+
+            $(document).on('click', '.action li.duplicate', function() {
+                var id = $(this).data('id');
+                window.location.href = URL_DUPPLICATE_POST + '/' + id;
+            });
+
+            $(document).on('click', '.action li.del', function() {
+                var id = $(this).data('id');
+                if (confirm('Are you sure you want to delete this post?')) {
+                    $.ajax({
+                        url: URL_DELETE_POST + '/' + id,
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            getBlogPosts();
+                        }
+                    });
+                }
+            });
+
+           
         });
 
         function getBlogPosts() {
             $.ajax({
-            url: URL_GET_BLOG_POSTS,
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: {
-                status: status ?? 'all', 
-                period: period ?? 'all'
-            },
-            success: function(response) {
-                $('#blog_posts_list').html(response.html);
-            }
+                url: URL_GET_BLOG_POSTS,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    status: status ?? 'all',
+                    period: period ?? 'all'
+                },
+                success: function(response) {
+                    $('#blog_posts_list').html(response.html);
+                }
             });
         }
 

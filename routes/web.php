@@ -37,13 +37,16 @@ Route::prefix('post')->group(function () {
     Route::get('/create', [BlogPostController::class, 'create'])->name('post.create');
     Route::get('/edit/{id}', [BlogPostController::class, 'edit'])->name('post.edit');
     Route::post('/update/{id}', [BlogPostController::class, 'update'])->name('post.update');
-    Route::delete('/delete/{id}', [BlogPostController::class, 'delete'])->name('post.delete');
-    Route::delete('/delete-multi', [BlogPostController::class, 'deleteMulti'])->name('post.delete.multi');
+    Route::get('/duplicate/{id}', [BlogPostController::class, 'duplicate'])->name('post.duplicate');
+
     //ajax
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
     Route::get('/ajax-list-status', [BlogPostController::class, 'ajaxListStatus'])->name('post.ajax.status');
     Route::get('/ajax-list-period', [BlogPostController::class, 'ajaxListPeriod'])->name('post.ajax.period');
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
+    Route::delete('/ajax-delete/{id}', [BlogPostController::class, 'ajaxDelete'])->name('post.ajax.delete');
+    Route::delete('/ajax-delete-multi', [BlogPostController::class, 'ajaxDeleteMulti'])->name('post.ajax.delete.multi');
+
     Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');

@@ -37,10 +37,10 @@
                 @endif
                 <div class="btn_dots">
                     <span></span>
-                    <ul>
-                        <li>詳細</li>
-                        <li>複製</li>
-                        <li class="del">削除</li>
+                    <ul class="action">
+                        <li class="show" data-id="{{ $item->id }}">詳細</li>
+                        <li class="duplicate" data-id="{{ $item->id }}">複製</li>
+                        <li class="del" data-id="{{ $item->id }}">削除</li>
                     </ul>
                 </div>
             </div>

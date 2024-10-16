@@ -56,4 +56,9 @@ class BlogPostService
     {
         return $this->repository->getAllPeriod();
     }
+
+    public function duplicatePost($id = null)
+    {
+        return $this->repository->duplicate($id);
+    }
 }

@@ -95,7 +95,7 @@ class BlogPostController extends Controller
         Log::info('Creating post', ['data' => $data]);
         //create post auto save then redirect to edit post
         $post = $this->service->createPost($data);
-        return redirect()->route('posts.edit', ['id' => $post->id]);
+        return redirect()->route('post.edit', ['id' => $post->id]);
     }
 
     public function edit($id)
@@ -113,22 +113,23 @@ class BlogPostController extends Controller
         return redirect()->route('posts.edit', ['id' => $post->id]);
     }
 
-    public function delete($id)
+    public function ajaxDelete(Request $request, $id)
     {
-        Log::info('Deleting post', ['post_id' => $id]);
-        $this->service->deletePost($id);
-        return redirect()->route('posts.dashboard');
+        if ($request->ajax()) {
+            Log::info('AJAX delete post requested', ['post_id' => $id]);
+            $this->service->deletePost($id);
+            return response()->json(['success' => true]);
+        }
     }
 
     public function deleteMulti(Request $request)
     {
-        $ids = $request->get('ids');
-        
-        Log::info('Deleting all posts', ['post_ids' => $ids]);
-
-        $this->service->deleteMultiPosts($ids);
-
-        redirect()->route('posts.dashboard');
+        if ($request->ajax()) {
+            $ids = $request->get('ids');
+            Log::info('AJAX delete multi posts requested', ['post_ids' => $ids]);
+            $this->service->deleteMultiPosts($ids);
+            return response()->json(['success' => true]);
+        }
     }
 
     public function ajaxPreviewPost(Request $request, $id)
@@ -141,4 +142,10 @@ class BlogPostController extends Controller
         }
     }
 
+    public function duplicate($id)
+    {
+        Log::info('Duplicating post', ['post_id' => $id]);
+        $post = $this->service->duplicatePost($id);
+        return redirect()->route('post.dashboard');
+    }
 }
