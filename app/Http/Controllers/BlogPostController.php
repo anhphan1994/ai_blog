@@ -21,7 +21,9 @@ class BlogPostController extends Controller
         try {
             $platform_id = $request->get('platform_id') ?? null;
             $blog_posts = $this->service->getAllPosts(['platform_id' => $platform_id]);
+
             trackInfo('Loading blog posts for platform', ['platform_id' => $platform_id]);
+            
             return view('blog_posts.list', compact('platform_id', 'blog_posts'));
         } catch (\Exception $e) {
             trackError('Error loading dashboard', ['error' => $e->getMessage()]);

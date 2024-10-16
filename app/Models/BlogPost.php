@@ -19,4 +19,11 @@ class BlogPost extends Model
         'user_id',
         'published_at'
     ];
+
+    const STATUS_GENERATED = 'generated';
+    const STATUS_DRAFT = 'draft';
+    const STATUS_SCHEDULED = 'scheduled';
+    const STATUS_PUBLISHED = 'published';
+    const STATUS_DELETED = 'deleted';
+
 }

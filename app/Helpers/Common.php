@@ -14,31 +14,57 @@ if (!function_exists('trackError')) {
     }
 }
 
-
-//get status name by status
 if (!function_exists('getStatusName')) {
     function getStatusName(string $status): string
     {
         $statusName = '';
         switch ($status) {
-            case 'genereated':
-                $statusName = '生成';
+            case 'generated':
+                $statusName = '記事生成中';
                 break;
             case 'draft':
                 $statusName = '下書き';
                 break;
             case 'scheduled':
-                $statusName = '予約';
+                $statusName = '予約投稿';
                 break;
             case 'published':
-                $statusName = '公開';
+                $statusName = '公開中';
             case 'deleted':
                 $statusName = '削除';
                 break;
             default:
-                $statusName = '不明';
+                $statusName = '記事生成中';
                 break;
         }
         return $statusName;
+    }
+}
+
+if (!function_exists('getStatusClass')) {
+    function getStatusClass(string $status): string
+    {
+        $statusClass = '';
+        switch ($status) {
+            case 'generated':
+                $statusClass = '';
+                break;
+            case 'draft':
+                $statusClass = 'st2';
+                break;
+            case 'scheduled':
+                $statusClass = 'st3';
+                break;
+            case 'published':
+                $statusClass = 'st4';
+                break;
+            case 'deleted':
+                $statusClass = 'st5';
+                break;
+            default:
+                $statusClass = '';
+                break;
+        }
+        return $statusClass;
     }
 }

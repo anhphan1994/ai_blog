@@ -23,6 +23,7 @@
             <div class="ctRight">
                 @yield('content')
             </div>
+        </main>
     </div>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/jquery.modal.min.js') }}"></script>
