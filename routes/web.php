@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\BlogPostController;
+use App\Http\Controllers\WordpressController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Auth\AuthenticatorController;
 
@@ -43,6 +44,7 @@ Route::prefix('post')->group(function () {
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
     Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
+    Route::get('/test', [WordpressController::class, 'test'])->name('post.test');
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
