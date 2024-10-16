@@ -36,6 +36,7 @@ Route::prefix('post')->group(function () {
     Route::get('/dashboard', [BlogPostController::class, 'dashboard'])->name('post.dashboard');
     Route::get('/create', [BlogPostController::class, 'create'])->name('post.create');
     Route::get('/edit/{id}', [BlogPostController::class, 'edit'])->name('post.edit');
+    Route::get('/show/{id}', [BlogPostController::class, 'show'])->name('post.show');
     Route::post('/update/{id}', [BlogPostController::class, 'update'])->name('post.update');
     Route::get('/duplicate/{id}', [BlogPostController::class, 'duplicate'])->name('post.duplicate');
 
@@ -46,6 +47,7 @@ Route::prefix('post')->group(function () {
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
     Route::delete('/ajax-delete/{id}', [BlogPostController::class, 'ajaxDelete'])->name('post.ajax.delete');
     Route::delete('/ajax-delete-multi', [BlogPostController::class, 'ajaxDeleteMulti'])->name('post.ajax.delete.multi');
+    Route::get('/ajax-preview-post', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
 
     Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
 });

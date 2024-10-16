@@ -31,5 +31,5 @@
     <script src="{{ asset('js/script.js') }}"></script>
     @yield('custom_js')
 </body>
-
+@yield('custom_modal')
 </html>

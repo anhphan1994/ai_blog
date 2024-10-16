@@ -41,6 +41,7 @@ class BlogPostService
     public function deleteMultiPosts($ids = [])
     {
         $result = [];
+
         foreach ($ids as $id) {
             $result[] = $this->deletePost($id);
         }
@@ -60,5 +61,10 @@ class BlogPostService
     public function duplicatePost($id = null)
     {
         return $this->repository->duplicate($id);
+    }
+
+    public function previewPost($id = null)
+    {
+        return $this->repository->getBLogSEOSetting($id);
     }
 }

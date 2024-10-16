@@ -121,4 +121,14 @@ class BlogPostRepository implements BlogPostRepositoryInterface
 
         return $duplicatedPost;
     }
+
+    public function getBLogSEOSetting($id)
+    {
+        
+        $query = $this->model->query();
+        $query->leftJoin('seo_settings AS seo', 'seo.blog_post_id', '=', 'blog_posts.id');
+        $query->select('seo.meta_title', 'seo.meta_description', 'seo.meta_keywords');
+        $query->where('blog_posts.id', $id);
+        return $query->first();
+    }
 }

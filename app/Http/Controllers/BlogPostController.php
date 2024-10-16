@@ -122,7 +122,7 @@ class BlogPostController extends Controller
         }
     }
 
-    public function deleteMulti(Request $request)
+    public function ajaxDeleteMulti(Request $request)
     {
         if ($request->ajax()) {
             $ids = $request->get('ids');
@@ -132,13 +132,14 @@ class BlogPostController extends Controller
         }
     }
 
-    public function ajaxPreviewPost(Request $request, $id)
+    public function ajaxPreviewPost(Request $request)
     {
         if ($request->ajax()) {
+            $id = $request->get('id');
             Log::info('AJAX preview post requested', ['post_id' => $id]);
-            $post = $this->service->getPostById($id);
-            $view = view('partials.ajax.preview_post', compact('post'))->render();
-            return response()->json(['html' => $view]);
+            $post = $this->service->previewPost($id);
+            $post->url = route('post.show', ['id' => $id]);
+            return response()->json(['post' => $post]);
         }
     }
 
@@ -148,4 +149,5 @@ class BlogPostController extends Controller
         $post = $this->service->duplicatePost($id);
         return redirect()->route('post.dashboard');
     }
+    
 }
