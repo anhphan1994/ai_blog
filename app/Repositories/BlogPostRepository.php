@@ -26,11 +26,14 @@ class BlogPostRepository implements BlogPostRepositoryInterface
         if (isset($params['user_id']) && !empty($params['user_id'])) {
             $query->where('blog_posts.user_id', $params['user_id']);
         }
-        if (isset($params['status']) && !empty($params['status'])) {
+        if (isset($params['status']) && !empty($params['status']) && $params['status'] != 'all') {
             $query->where('blog_posts.status', $params['status']);
         }
         if (isset($params['search']) && !empty($params['search'])) {
             $query->where('blog_posts.title', 'like', '%' . $params['search'] . '%');
+        }
+        if (isset($params['period']) && !empty($params['period']) && $params['period'] != 'all') {
+            $query->whereRaw('DATE_FORMAT(blog_posts.created_at, "%Y-%m") = ?', [$params['period']]);
         }
         $query->orderBy('blog_posts.id', 'desc');
 
@@ -86,5 +89,15 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     public function createHistory($data)
     {
         return BlogPostHistory::create($data);
+    }
+
+    public function getAllStatus()
+    {
+       return $this->model->select('status')->distinct()->get()->pluck('status');
+    }
+
+    public function getAllPeriod()
+    {
+        return $this->model->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as period')->distinct()->get()->pluck('period');
     }
 }

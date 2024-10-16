@@ -41,6 +41,8 @@ Route::prefix('post')->group(function () {
     Route::delete('/delete-multi', [BlogPostController::class, 'deleteMulti'])->name('post.delete.multi');
     //ajax
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
+    Route::get('/ajax-list-status', [BlogPostController::class, 'ajaxListStatus'])->name('post.ajax.status');
+    Route::get('/ajax-list-period', [BlogPostController::class, 'ajaxListPeriod'])->name('post.ajax.period');
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
     Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
 });

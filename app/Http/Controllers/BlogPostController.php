@@ -20,7 +20,14 @@ class BlogPostController extends Controller
     {
         try {
             $platform_id = $request->get('platform_id') ?? null;
-            $blog_posts = $this->service->getAllPosts(['platform_id' => $platform_id]);
+            $status = $request->get('status') ?? null;
+
+            $params = [
+                'platform_id' => $platform_id,
+                'status' => $status,
+            ];
+
+            $blog_posts = $this->service->getAllPosts($params);
 
             trackInfo('Loading blog posts for platform', ['platform_id' => $platform_id]);
             
@@ -38,21 +45,41 @@ class BlogPostController extends Controller
             $platform_id = $request->get('platform_id') ?? null;
             $user_id = Auth::id();
             $search = $request->get('search') ?? null;
-            $status = $request->get('status') ?? null;
+            $status = $request->get('status') ?? 'all';
+            $period = $request->get('period') ?? 'all';
 
             $params = [
                 'platform_id' => $platform_id, 
                 'user_id' => $user_id,
                 'search' => $search,
                 'status' => $status,
+                'period' => $period,
             ];
 
             Log::info('AJAX list post requested', ['params' => $params]);
 
-            $posts = $this->service->getAllPosts($params);
+            $blog_posts = $this->service->getAllPosts($params);
 
-            $view = view('partials.ajax.list_post', compact('posts'))->render();
+            $view = view('partials.ajax.list_post', compact('blog_posts'))->render();
 
+            return response()->json(['html' => $view]);
+        }
+    }
+
+    public function ajaxListStatus(Request $request)
+    {
+        if ($request->ajax()) {
+            $statuses = $this->service->getAllStatus();
+            $view = view('partials.ajax.list_status', compact('statuses'))->render();
+            return response()->json(['html' => $view]);
+        }
+    }
+
+    public function ajaxListPeriod(Request $request)
+    {
+        if ($request->ajax()) {
+            $periods =  $this->service->getAllPeriod();
+            $view = view('partials.ajax.list_period', compact('periods'))->render();
             return response()->json(['html' => $view]);
         }
     }

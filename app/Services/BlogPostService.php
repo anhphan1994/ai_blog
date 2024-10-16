@@ -46,4 +46,14 @@ class BlogPostService
         }
         return $result;
     }
+
+    public function getAllStatus()
+    {
+        return $this->repository->getAllStatus();
+    }
+
+    public function getAllPeriod()
+    {
+        return $this->repository->getAllPeriod();
+    }
 }

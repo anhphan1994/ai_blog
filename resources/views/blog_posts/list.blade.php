@@ -16,88 +16,92 @@
                 <div class="list_bd_head">
                     <div class="list_bd_head_l">
                         <span>8記事</span>
-                        <!-- <div class="btn_del">× 選択した記事を削除</div> -->
                     </div>
                     <div class="sl_gr">
-                        <div class="select selectEvent">
-                            <span>公開ステータス</span>
-                            <ul>
-                                <li>公開中</li>
-                                <li>予約投稿</li>
-                                <li>下書き</li>
-                            </ul>
-                            <!-- <label>
-          <select>
-            <option value="">公開ステータス</option>
-            <option value="公開中">公開中</option>
-            <option value="予約投稿">予約投稿</option>
-            <option value="下書き">下書き</option>
-          </select>
-        </label> -->
-                        </div>
-                        <div class="select selectEvent">
-                            <span>期間</span>
-                            <ul>
-                                <li>すべて</li>
-                                <li>2024年12月</li>
-                                <li>2024年11月</li>
-                                <li>2024年10月</li>
-                            </ul>
-                        </div>
+                        <div class="select selectEvent" id="status_filter"></div>
+                        <div class="select selectEvent" id="period_filter"></div>
                     </div>
                 </div>
-                <div class="list_bd_bd">
-                    <ul>
-                        @foreach($blog_posts as $item)
-                            <li>
-                                <div class="form">
-                                    <div class="list_checkbox">
-                                        <div>
-                                            <label class="checkbox">
-                                                <input type="checkbox">
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="blk_txt">
-                                    <span 
-                                        @if($item->status == \App\Models\BlogPost::STATUS_GENERATED)
-                                            class="st2"
-                                        @endif
-                                        >{{ $item->title }}
-                                    </span>
-                                    <p><span class="{{getStatusClass($item->status)}}">
-                                        ●{{ getStatusName($item->status) }}</span>
-                                        @if($item->status != \App\Models\BlogPost::STATUS_GENERATED)
-                                        作成：{{ \Carbon\Carbon::parse($item->created_at)->format('Y年m月d日 H:i') }}
-                                        @endif
-                                        @if($item->status == \App\Models\BlogPost::STATUS_PUBLISHED || $item->status == \App\Models\BlogPost::STATUS_SCHEDULED)
-                                        公開：{{ \Carbon\Carbon::parse($item->published_at)->format('Y年m月d日 H:i') }}
-                                        @endif
-                                    </p>
-                                </div>
-                                <div class="blk_r">
-                                    @if($item->status != \App\Models\BlogPost::STATUS_GENERATED)
-                                        <figure>
-                                            <img src="{{ asset('img/list_img1.png') }}" alt="">
-                                        </figure>
-                                        <div class="btn_eye"></div>
-                                    @endif
-                                    <div class="btn_dots">
-                                        <span></span>
-                                        <ul>
-                                            <li>詳細</li>
-                                            <li>複製</li>
-                                            <li class="del">削除</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
+                <div class="list_bd_bd" id="blog_posts_list">
+
                 </div>
             </div>
         </div>
     </div>
+@endsection
+@section('custom_js')
+    <script>
+        var URL_GET_BLOG_POSTS = "{{ route('post.ajax.list') }}";
+        var URL_GET_STATUS_FILTER = "{{ route('post.ajax.status') }}";
+        var URL_GET_PERIOD_FILTER = "{{ route('post.ajax.period') }}";
+        var status, period;
+
+        $(function() {
+            status = 'all';
+            period = 'all';
+
+            getBlogPosts();
+            getStatusFilter();
+            getPeriodFilter();
+
+            $(document).on('click', '#status_filter ul li', function() {
+            var statusText = $(this).text();
+            $('#status_filter span').text(statusText);
+            status = $(this).data('status_code');
+            console.log(status);
+            getBlogPosts();
+            });
+
+            $(document).on('click', '#period_filter ul li', function() {
+            var periodText = $(this).text();
+            $('#period_filter span').text(periodText);
+            period = $(this).data('period');
+            console.log(period);
+            getBlogPosts();
+            });
+        });
+
+        function getBlogPosts() {
+            $.ajax({
+            url: URL_GET_BLOG_POSTS,
+            type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                status: status ?? 'all', 
+                period: period ?? 'all'
+            },
+            success: function(response) {
+                $('#blog_posts_list').html(response.html);
+            }
+            });
+        }
+
+        function getStatusFilter() {
+            $.ajax({
+                url: URL_GET_STATUS_FILTER,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $('#status_filter').html(response.html);
+                }
+            });
+        }
+
+        function getPeriodFilter() {
+            $.ajax({
+                url: URL_GET_PERIOD_FILTER,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $('#period_filter').html(response.html);
+                }
+            });
+        }
+    </script>
 @endsection
