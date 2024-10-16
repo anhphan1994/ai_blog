@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('post_metrics', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('blog_post_id');
-            $table->integer('views')->default(0);
-            $table->integer('likes')->default(0);
-            $table->integer('comments')->default(0);
+            $table->unsignedBigInteger('blog_post_id')->nullable();
+            $table->integer('views')->default(0)->nullable();
+            $table->integer('likes')->default(0)->nullable();
+            $table->integer('comments')->default(0)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

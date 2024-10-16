@@ -90,7 +90,7 @@ class BlogPostController extends Controller
         $data  = [
             'platform_id' => $platform_id,
             'status' => 'draft',
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id() ?? 1,
         ];
         Log::info('Creating post', ['data' => $data]);
         //create post auto save then redirect to edit post

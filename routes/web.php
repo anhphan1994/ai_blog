@@ -35,7 +35,7 @@ Route::get('/', function () {
 Route::prefix('post')->group(function () {
     Route::get('/dashboard', [BlogPostController::class, 'dashboard'])->name('post.dashboard');
     Route::get('/create', [BlogPostController::class, 'create'])->name('post.create');
-    Route::get('/edit/{id}', [BlogPostController::class, 'edit'])->name('post.edit');
+    Route::get('/create/{id}', [BlogPostController::class, 'edit'])->name('post.edit');
     Route::get('/show/{id}', [BlogPostController::class, 'show'])->name('post.show');
     Route::post('/update/{id}', [BlogPostController::class, 'update'])->name('post.update');
     Route::get('/duplicate/{id}', [BlogPostController::class, 'duplicate'])->name('post.duplicate');

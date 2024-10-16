@@ -93,6 +93,7 @@
         var URL_DELETE_POST = "{{ route('post.ajax.delete', '') }}";
         var URL_DELETE_MULTI_POSTS = "{{ route('post.ajax.delete.multi') }}";
         var URL_PREVIEW_POST = "{{ route('post.ajax.preview') }}";
+        var URL_CREATE_POST = "{{ route('post.create') }}";
 
         var status, period;
 
@@ -166,6 +167,10 @@
                 if (confirm('Are you sure you want to delete selected posts?')) {
                     deleteMultiPosts(ids);
                 }
+            });
+
+            $(document).on('click', '.btn_create_art', function() {
+                window.location.href = URL_CREATE_POST;
             });
         });
 
