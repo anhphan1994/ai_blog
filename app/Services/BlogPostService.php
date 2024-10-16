@@ -67,4 +67,9 @@ class BlogPostService
     {
         return $this->repository->getBLogSEOSetting($id);
     }
+
+    public function getPostStatus($id = null)
+    {
+        return $this->repository->getPostStatus($id);
+    }
 }

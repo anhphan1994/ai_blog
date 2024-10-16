@@ -15,6 +15,8 @@ class BlogPost extends Model
     public $timestamps = true;
     protected $fillable = [
         'title',
+        'slug',
+        'outline',
         'content',
         'short_content',
         'status',
@@ -22,6 +24,9 @@ class BlogPost extends Model
         'published_at'
     ];
 
+    const STATUS_PENDING = 'pending';
+
+    const STATUS_GENERATING = 'generating';
     const STATUS_GENERATED = 'generated';
     const STATUS_DRAFT = 'draft';
     const STATUS_SCHEDULED = 'scheduled';

@@ -13,4 +13,5 @@ interface BlogPostRepositoryInterface
     public function getAllPeriod();
     public function duplicate($id);
     public function getBLogSEOSetting($id);
+    public function getPostStatus($id);
 }

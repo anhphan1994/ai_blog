@@ -3,21 +3,33 @@
 namespace App\Services;
 
 use App\Helpers\AIHelper;
+use App\Models\BlogPost;
 use App\Prompts\BlogPrompt;
-use App\Repositories\BlogPostRepository;
-use Cache;
+use App\Repositories\Interfaces\BlogPostRepositoryInterface;
 use Log;
 
 class AIService
 {
-    public function generateBlogContent($short_desc, $keyword, $style, $num_of_section)
+    protected $blogPostRepository;
+
+    public function __construct(BlogPostRepositoryInterface $blogPostRepository)
     {
+        $this->blogPostRepository = $blogPostRepository;
+    }
+
+    public function generateBlogContent($post_id, $short_desc, $keyword, $style, $num_of_section)
+    {
+        
         $get_outline_prompt = BlogPrompt::generateFirstPrompt($short_desc, $keyword, $style, $num_of_section);
         $outline_res = AIHelper::sendMessageToAI($get_outline_prompt);
         Log::info(message: 'Outline Response: ' . $outline_res);
     
         $title = explode("\n", $outline_res)[0];
 
+        if(!empty($title)){
+            $this->blogPostRepository->update($post_id, ['title' => $title]);
+        }
+        
         $fist_response_arr = explode("\n", $outline_res);
         $res_arr = array_slice($fist_response_arr, 1);
 
@@ -29,6 +41,10 @@ class AIService
             }
             $outline_list .= $section . "\n";
             $outline_arr[] = $section;
+        }
+        
+        if(!empty($outline_list)){
+            $this->blogPostRepository->update($post_id, ['outline' => $outline_list]);
         }
 
         $first_section_prompt = BlogPrompt::generateSecondPrompt($title, $short_desc, $keyword, $style, $num_of_section);
@@ -51,7 +67,12 @@ class AIService
                 $blog_content = $blog_content ."\n\n\n".$res;
             }
         }
-        return $blog_content ?? 'No response from AI.';
+
+        if(!empty($blog_content)){
+            $this->blogPostRepository->update($post_id, ['content' => $blog_content, 'status' => BlogPost::STATUS_GENERATED]);
+        }
+        
+        Log::info('Blog content generated');
     }
 
     public function generateBlogTitle($short_desc, $keyword, $style, $num_of_section){

@@ -14,6 +14,7 @@ a[href^=tel] {
 
 .container {
   overflow: hidden;
+  height: 100%;
 }
 
 .row {
@@ -32,6 +33,15 @@ img {
   max-width: 100%;
   width: auto;
   height: auto;
+}
+
+body main.p_post {
+  height: 100%;
+}
+
+body main.p_post .ctRight {
+  height: 100%;
+  overflow: auto;
 }
 
 body main p {
@@ -466,7 +476,7 @@ body main p {
   margin-bottom: 12px;
 }
 
-.form .f_txt span {
+.form .f_txt span, .form .f_txt a {
   color: #183ae0;
 }
 
@@ -777,6 +787,13 @@ body main p {
   font-weight: 400;
   color: #1a1a1a;
   cursor: pointer;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.list_ctn .list_bd .list_bd_head .sl_gr .select ul li:hover {
+  opacity: 0.5;
 }
 
 .list_ctn .list_bd .list_bd_head .sl_gr .select ul li + li {
@@ -987,6 +1004,13 @@ body main p {
   font-weight: 400;
   color: #1a1a1a;
   cursor: pointer;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.list_ctn .list_bd .list_bd_bd > ul > li .blk_r .btn_dots ul li:hover {
+  opacity: 0.5;
 }
 
 .list_ctn .list_bd .list_bd_bd > ul > li .blk_r .btn_dots ul li + li {
@@ -1129,6 +1153,8 @@ body main p {
 
 .p_login .box .btn.st2 {
   margin-top: 22px;
+  -moz-border-radius: 8px;
+       border-radius: 8px;
 }
 
 .p_login .box .input_group {
@@ -1171,7 +1197,7 @@ a.btn_back {
   -moz-border-radius: 8px;
        border-radius: 8px;
   background: #e6ebfb;
-  font-size: 16px;
+  font-size: 14px;
   color: #183AE0;
   position: relative;
   display: -webkit-box;
@@ -1345,6 +1371,23 @@ a.btn_back::before {
   margin-bottom: 32px;
 }
 
+.post_ctn .post_bot .post_bot_l h3.ttl {
+  font-size: 24px;
+  line-height: 1.5;
+  font-weight: 700;
+  text-align: left;
+  color: #1A1A1A;
+  display: block;
+  margin-bottom: 18px;
+}
+
+.post_ctn .post_bot .post_bot_l .formScroll {
+  height: -webkit-calc(100% - 60px);
+  height: -moz-calc(100% - 60px);
+  height: calc(100% - 60px);
+  overflow: auto;
+}
+
 .post_ctn .post_bot .post_bot_r {
   width: 100%;
   margin: auto;
@@ -1353,14 +1396,16 @@ a.btn_back::before {
   position: relative;
 }
 
+.post_ctn .post_bot .post_bot_r.noBot {
+  padding-bottom: 0;
+}
+
 .post_ctn .post_bot .post_bot_r.noPd {
   padding: 0;
 }
 
 .post_ctn .post_bot .post_bot_r .btn.st2 {
-  width: -webkit-calc(100% + 80px);
-  width: -moz-calc(100% + 80px);
-  width: calc(100% + 80px);
+  width: 100%;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -1370,9 +1415,9 @@ a.btn_back::before {
 
 .post_ctn .post_bot .post_bot_r .p_edit {
   overflow: auto;
-  height: -webkit-calc(100% - 104px);
-  height: -moz-calc(100% - 104px);
-  height: calc(100% - 104px);
+  height: -webkit-calc(100% - 64px);
+  height: -moz-calc(100% - 64px);
+  height: calc(100% - 64px);
 }
 
 .post_ctn .post_bot .post_bot_r .p_edit .e_it + .e_it {
@@ -1433,6 +1478,12 @@ a.btn_back::before {
   border: 1px solid #173be0;
   font-size: 14px;
   color: #183ae0;
+  cursor: pointer;
+}
+
+.post_ctn .post_bot .post_bot_r .p_edit .e_it .e_action .e_action_l .tags span.active {
+  color: #fff;
+  background: #173be0;
 }
 
 .post_ctn .post_bot .post_bot_r .p_edit .e_it .e_action .e_action_r {
@@ -1478,6 +1529,8 @@ a.btn_back::before {
   outline: none;
   background: none;
   border: 0;
+  resize: none;
+  font-size: 16px;
 }
 
 .post_ctn .post_bot .post_bot_r .box_gr .txt-lg {
@@ -1503,11 +1556,18 @@ a.btn_back::before {
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
+  height: 100%;
 }
 
 .post_ctn .ck_block .ck_block_l {
   width: 100%;
+  height: 100%;
+  overflow: auto;
   padding: 40px;
+}
+
+.post_ctn .ck_block .ck_block_l .bl_head {
+  height: 100%;
 }
 
 .post_ctn .ck_block .ck_block_l .bl_head h2 {
@@ -1569,6 +1629,8 @@ a.btn_back::before {
   width: 310px;
   -ms-flex-negative: 0;
       flex-shrink: 0;
+  height: 100%;
+  overflow: auto;
   padding: 20px;
   border-left: 1px solid #dbdbdb;
 }
@@ -1662,6 +1724,9 @@ a.btn_back::before {
 
 .post_ctn .ck_block .ck_block_r .blk02 dl dd {
   width: 100%;
+}
+
+.post_ctn .ck_block .ck_block_r .blk02 dl dd a {
   color: #183ae0;
 }
 
@@ -1846,6 +1911,7 @@ a.btn_back::before {
 
 .modal.st3 .form .btn {
   height: 48px;
+  margin-bottom: 0;
 }
 
 .modal .m_txt {

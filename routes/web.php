@@ -48,8 +48,8 @@ Route::prefix('post')->group(function () {
     Route::delete('/ajax-delete/{id}', [BlogPostController::class, 'ajaxDelete'])->name('post.ajax.delete');
     Route::delete('/ajax-delete-multi', [BlogPostController::class, 'ajaxDeleteMulti'])->name('post.ajax.delete.multi');
     Route::get('/ajax-preview-post', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
-
-    Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
+    Route::post('/ajax-generate-post', [BlogPostController::class, 'ajaxGeneratePost'])->name('post.ajax.generate');
+    Route::get('/ajax-check-post-status', [BlogPostController::class, 'ajaxCheckPostStatus'])->name('post.ajax.check_status');
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
@@ -57,7 +57,6 @@ Route::post('/register', [AuthenticatorController::class, 'register'])->name('au
 //Route::get('/login', [AuthenticatorController::class, 'signin'])->name('login');
 
 Route::prefix('ajax-call-ai')->group(function (): void {
-    Route::get('/generate-blog-content', [AIController::class, 'generateBlogContent'])->name('ai.generateBlogContent');
     Route::get('/generate-blog-title', [AIController::class, 'generateBlogTitle'])->name('ai.generateBlogTitle');
     Route::get('/generate-blog-outline', [AIController::class, 'generateBlogOutline'])->name('ai.generateBlogOutline');
 });

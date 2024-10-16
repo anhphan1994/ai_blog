@@ -63,8 +63,6 @@ class BlogPostRepository implements BlogPostRepositoryInterface
 
     public function update($id, array $data)
     {
-
-
         $post = $this->model->findOrFail($id);
         $post->update($data);
 
@@ -130,5 +128,10 @@ class BlogPostRepository implements BlogPostRepositoryInterface
         $query->select('seo.meta_title', 'seo.meta_description', 'seo.meta_keywords');
         $query->where('blog_posts.id', $id);
         return $query->first();
+    }
+
+    public function getPostStatus($id)
+    {
+        return $this->model->where('id', $id)->value('status');
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GeneratePostJob;
+use App\Models\BlogPost;
+use App\Repositories\BlogPostRepository;
 use App\Services\BlogPostService;
 use Auth;
 use Illuminate\Http\Request;
@@ -89,7 +92,7 @@ class BlogPostController extends Controller
         $platform_id = $request->get('platform_id') ?? null;
         $data  = [
             'platform_id' => $platform_id,
-            'status' => 'draft',
+            'status' => BlogPost::STATUS_PENDING,
             'user_id' => Auth::id() ?? 1,
         ];
         Log::info('Creating post', ['data' => $data]);
@@ -102,7 +105,7 @@ class BlogPostController extends Controller
     {
         Log::info('Editing post', ['post_id' => $id]);
         $post = $this->service->getPostById($id);
-        return view('blog_posts.edit', compact('post'));
+        return view('blog_posts.init_post_setting', compact('post'));
     }
 
     public function update(Request $request, $id)
@@ -149,5 +152,38 @@ class BlogPostController extends Controller
         $post = $this->service->duplicatePost($id);
         return redirect()->route('post.dashboard');
     }
+
+    public function ajaxGeneratePost(Request $request)
+    {
+        if ($request->ajax()) {
+            $params = [
+                'short_description' => $request->get('short_description') ?? "APEXの競技シーンとヴァロラントの競技シーンの比較",
+                'post_style' => $request->get('post_style') ?? "同じプロゲーマーとしての目線",
+                'max_characters' => $request->get('max_characters'),
+                'section_number' => $request->get('section_number') ?? "4",
+                'keywords' => $request->get('keywords') ?? "Laz選手とImperial hal選手",
+            ];
+            $post_id = $request->get('post_id');
+
+            Log::info('AJAX generate post requested', ['params' => $params]);
+
+            // Dispatch the job with the parameters
+            GeneratePostJob::dispatch($post_id, $params);
+
+            return response()->json(['message' => 'Post generation job dispatched']);
+        }
+    }
     
+    public function ajaxCheckPostStatus(Request $request)
+    {
+        if ($request->ajax()) {
+            
+            $post_id = $request->get('post_id');
+
+            $this->service->updatePost($post_id, ['status' => BlogPost::STATUS_GENERATING]);
+            
+            $status = $this->service->getPostStatus($post_id);
+            return response()->json(['status' => $status]);
+        }
+    }
 }
