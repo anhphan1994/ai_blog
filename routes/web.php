@@ -57,6 +57,7 @@ Route::prefix('post')->group(function () {
     Route::post('/ajax-update-blog-post', [BlogPostController::class, 'ajaxUpdateBlogPost'])->name('post.ajax.updateBlogPost');
     Route::post('/upload_image', [BlogPostController::class, 'uploadImage'])->name('post.upload_image');
     Route::post('/ajax-generate-seo-setting', [BlogPostController::class, 'ajaxGenerateSeoSetting'])->name('post.ajax.generateSeoSetting');
+    Route::post('/ajax-update-tag', [BlogPostController::class, 'ajaxUpdateTag'])->name('post.ajax.updateTag');
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');

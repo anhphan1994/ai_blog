@@ -90,6 +90,7 @@
         var URL_GENERATE_OUTLINE = "{{ route('post.ajax.generateBlogOutline') }}";
         var URL_GENERATE_CONTENT = "{{ route('post.ajax.generateBlogContent') }}";
         var URL_UPDATE_BLOG_POST = "{{ route('post.ajax.updateBlogPost') }}";
+        var URL_UPDATE_TAG = "{{ route('post.ajax.updateTag') }}";
 
         $(document).ready(function() {
             $('#generate_title_btn').click(function() {
@@ -109,6 +110,11 @@
                 var outline = $('#outline_value').val();
                 var content = $('#content_value').val();
                 updateBlogPost(title, outline, content);
+            });
+
+            $('.tags').find('span').click(function() {
+                var tag = $(this).text();
+                // saveTag(tag);
             });
         });
 
@@ -152,6 +158,15 @@
         }
 
         function generateContent() {
+
+            var tags = $('.tags').find('span');
+            var tagsList = [];
+            tags.each(function() {
+                if ($(this).hasClass('active')) {
+                    tagsList.push($(this).text());
+                }
+            });
+
             $.ajax({
                 url: URL_GENERATE_CONTENT,
                 type: 'POST',
@@ -159,6 +174,7 @@
                     post_id: '{{ $post->id }}',
                     title: $('#title_value').val(),
                     outline: $('#outline_value').val(),
+                    tags: tagsList,
                 },
                 beforeSend: function() {
                     $('#content_value').val('生成中...');
@@ -173,6 +189,15 @@
         }
 
         function updateBlogPost(title, outline, content) {
+
+            var tags = $('.tags').find('span');
+            var tagsList = [];
+            tags.each(function() {
+                if ($(this).hasClass('active')) {
+                    tagsList.push($(this).text());
+                }
+            });
+
             $.ajax({
                 url: URL_UPDATE_BLOG_POST,
                 type: 'POST',
@@ -181,6 +206,7 @@
                     title: title,
                     outline: outline,
                     content: content,
+                    tags: tagsList,
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -188,6 +214,30 @@
                 success: function(data) {
                     if (data.status == 'success') {
                         window.location.href = '{{ route('post.postSetting', $post->id) }}';
+                    }
+                }
+            });
+        }
+        
+        function saveTag(tag) {
+            var post_id = '{{ $post->id }}';
+            $.ajax({
+                url: URL_UPDATE_TAG,
+                type: 'POST',
+                data: {
+                    post_id: post_id,
+                    tag: tag,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if (data.status == 'success') {
+                        if ($(this).hasClass('active')) {
+                            $(this).removeClass('active');
+                        } else {
+                            $(this).addClass('active');
+                        }
                     }
                 }
             });

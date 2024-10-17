@@ -18,6 +18,10 @@ class BlogPostService
         return $this->repository->getAll($params);
     }
 
+    public function countTotalPost($params = [])
+    {
+        return $this->repository->getAll($params, true);
+    }
     public function getPostById($id = null)
     {
         return $this->repository->getById($id);
@@ -101,5 +105,10 @@ class BlogPostService
     public function createMedia($data = [])
     {
         return $this->repository->createMedia($data);
+    }
+
+    public function updateTag($id = null, array $data = [])
+    {
+        return $this->repository->updateTag($id, $data);
     }
 }
