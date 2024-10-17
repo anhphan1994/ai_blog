@@ -1950,4 +1950,6 @@ a.btn_back::before {
   right: 12px;
   width: 36px;
   height: 36px;
+.text-danger {
+    color: red;
 }

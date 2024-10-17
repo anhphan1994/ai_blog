@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" >
-@include('layouts.header')
+<html lang="en">
+@include('layouts.auth.header')
 
-<body>
-    @yield('content')
+<body class="p_login">
+@yield('content')
+@include('layouts.auth.footer')
 </body>
 </html>
