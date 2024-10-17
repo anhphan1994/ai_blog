@@ -77,4 +77,9 @@ class BlogPostService
     {
         return $this->repository->createPostParams($data);
     }
+
+    public function getPostParams($id = null)
+    {
+        return $this->repository->getPostParams($id);
+    }
 }

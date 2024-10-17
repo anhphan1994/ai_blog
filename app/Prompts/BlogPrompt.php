@@ -5,7 +5,7 @@ use Log;
 
 class BlogPrompt
 {
-    public static function generateFirstPrompt($short_desc, $keyword, $style, $num_of_section){
+    public static function generateTitleOutlinePrompt($short_desc, $keyword, $style, $num_of_section){
         return "
             #あなたの役割
             読者100万人を超える超人気SEOブロガー。

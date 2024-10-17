@@ -51,18 +51,15 @@ Route::prefix('post')->group(function () {
     Route::get('/ajax-preview-post', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
     Route::post('/ajax-generate-post', [BlogPostController::class, 'ajaxGeneratePost'])->name('post.ajax.generate');
     Route::get('/ajax-check-post-status', [BlogPostController::class, 'ajaxCheckPostStatus'])->name('post.ajax.check_status');
+    Route::post('/ajax-generate-blog-title', [BlogPostController::class, 'ajaxGenerateBlogTitle'])->name('post.ajax.generateBlogTitle');
+    Route::post('/ajax-generate-blog-outline', [BlogPostController::class, 'ajaxGenerateBlogOutline'])->name('post.ajax.generateBlogOutline');
+    Route::post('/ajax-generate-blog-content', [BlogPostController::class, 'ajaxGenerateBlogContent'])->name('post.ajax.generateBlogContent');
+
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
 //Route::post('/login', [AuthenticatorController::class, 'loginValidate'])->name('auth.login');
 //Route::get('/login', [AuthenticatorController::class, 'signin'])->name('login');
-
-Route::prefix('ajax-call-ai')->group(function (): void {
-    Route::get('/generate-blog-title', [AIController::class, 'generateBlogTitle'])->name('ai.generateBlogTitle');
-    Route::get('/generate-blog-outline', [AIController::class, 'generateBlogOutline'])->name('ai.generateBlogOutline');
-});
-
-// return redirect()->route('error.page')->with('error', 'Unable to load dashboard');
 
 Route::get('/error', function () {
     return view('errors.error', ['error' => 'Unable to load page']);

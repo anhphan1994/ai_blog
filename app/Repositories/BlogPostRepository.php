@@ -140,4 +140,9 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     {
         return BlogPostParameter::create($data);
     }
+
+    public function getPostParams($id)
+    {
+        return BlogPostParameter::where('blog_post_id', $id)->first();
+    }
 }
