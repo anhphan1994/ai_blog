@@ -118,11 +118,6 @@
                 var post_id = $('#post_id').val();
                 generatePost(post_id, short_description, post_style, keywords, section_number);
             });
-
-            // setInterval(function() {
-            //     checkStatus();
-            // }, 10000);
-
         });
 
         function generatePost(post_id, short_description, post_style, keywords, section_number) {
@@ -143,6 +138,9 @@
                     if (data.status == 'success') {
                         $('#modal01').show();
                     }
+                    setInterval(function() {
+                        checkStatus();
+                    }, 10000);
                 }
             });
         }
@@ -159,8 +157,8 @@
                     post_id: post_id
                 },
                 success: function(data) {
-                    if (data.status == "{{ \App\Models\BlogPost::STATUS_PENDING }}") {
-                        $('#modal01').hide();
+                    if (data.status == "{{ \App\Models\BlogPost::STATUS_GENERATED }}") {
+                        location.href = "{{ route('post.result', $post->id) }}";
                     }
                 }
             });

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('outline')->nullable();
             $table->text('content')->nullable();
             $table->text('short_content')->nullable();
-            $table->string('status')->default('draft')->nullable();
+            $table->string('status')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamps();

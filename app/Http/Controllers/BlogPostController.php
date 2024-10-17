@@ -156,17 +156,24 @@ class BlogPostController extends Controller
     public function ajaxGeneratePost(Request $request)
     {
         if ($request->ajax()) {
+            // $params = [
+            //     'short_description' => $request->get('short_description') ,
+            //     'post_style' => $request->get('post_style') ,
+            //     'max_characters' => $request->get('max_characters'),
+            //     'section_number' => $request->get('section_number') ,
+            //     'keywords' => $request->get('keywords') ,
+            // ];
+
             $params = [
-                'short_description' => $request->get('short_description') ?? "APEXの競技シーンとヴァロラントの競技シーンの比較",
-                'post_style' => $request->get('post_style') ?? "同じプロゲーマーとしての目線",
-                'max_characters' => $request->get('max_characters'),
-                'section_number' => $request->get('section_number') ?? "4",
-                'keywords' => $request->get('keywords') ?? "Laz選手とImperial hal選手",
+                'short_description' => "APEXの競技シーンとヴァロラントの競技シーンの比較",
+                'post_style' => "同じプロゲーマーとしての目線",
+                'section_number' => "4",
+                'keywords' => "Laz選手とImperial hal選手",
             ];
             $post_id = $request->get('post_id');
 
             Log::info('AJAX generate post requested', ['params' => $params]);
-
+            $this->service->updatePost($post_id, ['status' => BlogPost::STATUS_GENERATING]);
             // Dispatch the job with the parameters
             GeneratePostJob::dispatch($post_id, $params);
 
@@ -179,11 +186,18 @@ class BlogPostController extends Controller
         if ($request->ajax()) {
             
             $post_id = $request->get('post_id');
-
-            $this->service->updatePost($post_id, ['status' => BlogPost::STATUS_GENERATING]);
             
             $status = $this->service->getPostStatus($post_id);
+
             return response()->json(['status' => $status]);
         }
+    }
+
+    public function result($id)
+    {
+        dd('ok');
+        Log::info('Showing post result', ['post_id' => $id]);
+        $post = $this->service->getPostById($id);
+        return view('blog_posts.result', compact('post'));
     }
 }

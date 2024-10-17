@@ -39,7 +39,8 @@ Route::prefix('post')->group(function () {
     Route::get('/show/{id}', [BlogPostController::class, 'show'])->name('post.show');
     Route::post('/update/{id}', [BlogPostController::class, 'update'])->name('post.update');
     Route::get('/duplicate/{id}', [BlogPostController::class, 'duplicate'])->name('post.duplicate');
-
+    //result
+    Route::get('/result/{id}', [BlogPostController::class, 'result'])->name('post.result');
     //ajax
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
     Route::get('/ajax-list-status', [BlogPostController::class, 'ajaxListStatus'])->name('post.ajax.status');
