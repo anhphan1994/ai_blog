@@ -48,7 +48,6 @@ Route::prefix('post')->group(function () {
     Route::get('/ajax-list-period', [BlogPostController::class, 'ajaxListPeriod'])->name('post.ajax.period');
     Route::get('/ajax-preview-post/{id}', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
     Route::get('testCreatePost', [AIController::class, 'testCreatePost2']);
-    Route::get('/test', [WordpressController::class, 'test'])->name('post.test');
     Route::delete('/ajax-delete/{id}', [BlogPostController::class, 'ajaxDelete'])->name('post.ajax.delete');
     Route::delete('/ajax-delete-multi', [BlogPostController::class, 'ajaxDeleteMulti'])->name('post.ajax.delete.multi');
     Route::get('/ajax-preview-post', [BlogPostController::class, 'ajaxPreviewPost'])->name('post.ajax.preview');
@@ -61,6 +60,14 @@ Route::prefix('post')->group(function () {
     Route::post('/upload_image', [BlogPostController::class, 'uploadImage'])->name('post.upload_image');
     Route::post('/ajax-generate-seo-setting', [BlogPostController::class, 'ajaxGenerateSeoSetting'])->name('post.ajax.generateSeoSetting');
     Route::post('/ajax-update-tag', [BlogPostController::class, 'ajaxUpdateTag'])->name('post.ajax.updateTag');
+
+    Route::group(['middleware' => [
+//        'ajax'
+    ]], function () {
+        Route::get('/check-wordpress-account', [WordpressController::class, 'checkPlatformAccount'])->name('wordpress.checkWordpressAccount');
+        Route::get('/create-platform-account', [WordpressController::class, 'createPlatformAccount'])->name('wordpress.createPlatformAccount');
+        Route::get('/publish-to-wordpress', [WordpressController::class, 'publishArticle'])->name('wordpress.publishToWordpress');
+    });
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
