@@ -138,4 +138,19 @@ class AIService
 
         return $blog_content;
     }
+
+    public function generateMetaDescription($post_id){
+        $post = $this->blogPostRepository->getById($post_id);
+        $title = $post->title;
+        $content = $post->content;
+        $keyword = $post->keywords;
+        $prompt = BlogPrompt::generateMetaDescriptionPrompt($title, $content, $keyword);
+        
+        $res = AIHelper::sendMessageToAI($prompt);
+
+        if(empty($res) || $res == config('ai.response.no_response')){
+            return '';
+        }
+        return $res;
+    }
 }

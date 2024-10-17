@@ -101,7 +101,7 @@
                                     <dt>メタディスクリプション</dt>
                                     <dd>
                                         <div class="form">
-                                            <textarea>東京の隠れた映画ロケ地を探検しよう！「君の名は。」や「るろうに剣心」など人気作品のシーンを再現できるスポットを紹介。映画ファン必見の東京観光ガイド。インスタ映えする写真スポットも満載！</textarea>
+                                            <textarea id="meta_description">{{ $seo_setting->meta_description ?? '' }}</textarea>
                                         </div>
                                     </dd>
                                 </dl>
@@ -134,7 +134,7 @@
             language: 'ja',
             resize: false,
             height: '90%',
-            images_upload_url: "{{route('post.upload_image')}}",
+            images_upload_url: "{{ route('post.upload_image') }}",
             file_picker_callback: function(callback, value, meta) {
                 if (meta.filetype === 'image') {
                     let url = prompt('画像URLを入力してください');
@@ -144,30 +144,39 @@
         });
     </script>
     <script>
+        var URL_UPDATE_BLOG_POST = "{{ route('post.ajax.updateBlogPost') }}";
+
         $(document).ready(function() {
-            //btn_preview click, save post then preview
             $('.btn_preview').click(function() {
                 var content = tinymce.get('editor').getContent();
-                var url = "{{ route('post.ajax.updateBlogPost') }}";
+                var meta_description = $('#meta_description').val();
+                var status = "{{ \App\Models\BlogPost::STATUS_DRAFT }}";
                 var data = {
                     content: content,
-                    status: "{{ \App\Models\BlogPost::STATUS_DRAFT }}",
-                    post_id: '{{ $post->id }}'
+                    meta_description: meta_description,
+                    status: status,
+                    post_id: '{{ $post->id }}',
+                    source_from: 'seo_setting'
                 };
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: data,
-                    success: function(response) {
-                        if (response.status == 'success') {
-                            location.reload();
-                        }
-                    }
-                });
+
+                updateBlogPost(data);
             });
         });
+
+        function updateBlogPost(data) {
+            $.ajax({
+                url: URL_UPDATE_BLOG_POST,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: data,
+                success: function(response) {
+                    if (response.status == 'success') {
+                        location.reload();
+                    }
+                }
+            });
+        }
     </script>
 @endsection

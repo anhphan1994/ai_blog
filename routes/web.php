@@ -55,8 +55,8 @@ Route::prefix('post')->group(function () {
     Route::post('/ajax-generate-blog-outline', [BlogPostController::class, 'ajaxGenerateBlogOutline'])->name('post.ajax.generateBlogOutline');
     Route::post('/ajax-generate-blog-content', [BlogPostController::class, 'ajaxGenerateBlogContent'])->name('post.ajax.generateBlogContent');
     Route::post('/ajax-update-blog-post', [BlogPostController::class, 'ajaxUpdateBlogPost'])->name('post.ajax.updateBlogPost');
-
     Route::post('/upload_image', [BlogPostController::class, 'uploadImage'])->name('post.upload_image');
+    Route::post('/ajax-generate-seo-setting', [BlogPostController::class, 'ajaxGenerateSeoSetting'])->name('post.ajax.generateSeoSetting');
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');

@@ -255,7 +255,27 @@ class BlogPostController extends Controller
             $post_id = $request->get('post_id');
             $data = $request->all();
             Log::info('AJAX update blog post requested', ['post_id' => $post_id, 'data' => $data]);
+            
+            if(!empty($data['source_from']) && $data['source_from'] == 'seo_setting'){
+                $seo_setting_data = [
+                    'meta_title' => $data['meta_title'] ?? '',
+                    'meta_description' => $data['meta_description'] ?? '',
+                    'meta_keywords' => $data['meta_keywords'] ?? '',
+                ];
+                $this->service->updateSEOSetting($post_id, $seo_setting_data);
+            }else{
+                $data['meta_description'] = $this->getMetaDescription($post_id);
+                $this->service->updateSEOSetting($post_id, $data);
+            }
+
+            if (isset($data['source_from'])) unset($data['source_from']);
+            if (isset($data['meta_title'])) unset($data['meta_title']);
+            if (isset($data['meta_description'])) unset($data['meta_description']);
+            if (isset($data['meta_keywords'])) unset($data['meta_keywords']);
+            
             $this->service->updatePost($post_id, $data);
+
+
             return response()->json(['message' => 'Post updated', 'status' => 'success']);
         }
     }
@@ -277,6 +297,21 @@ class BlogPostController extends Controller
         $image = $request->file('file');
         $path = $image->store('images', 'public');
 
+        $media = [
+            'blog_post_id' => $request->get('post_id'),
+            'file_name' => $image->getClientOriginalName(),
+            'file_url' => $path,
+            'file_type' => $image->getClientMimeType(),
+        ];
+
+        $this->service->createMedia($media);
+
         return response()->json(['location' => asset('storage/' . $path)]);
+    }
+
+    private function getMetaDescription($post_id)
+    {
+        $meta_description =  $this->ai_service->generateMetaDescription($post_id);
+        return $meta_description;
     }
 }

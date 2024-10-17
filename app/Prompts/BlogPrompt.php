@@ -261,4 +261,32 @@ class BlogPrompt
             『見出し2』(見出しは必ず『』で括って）
             ";
     }
+
+    public static function generateMetaDescriptionPrompt($title, $content, $keyword){
+        return "
+            #制約条件に従って、SEOで上位を狙う上で効果的なWebページのmeta descriptionを作成してください。        
+        
+            #制約条件        
+            ・ブログに適したmeta descriptionを作成すること        
+            ・meta descrptionにキーワード[".$keyword."]を含めること        
+            ・対象のユーザーが明確にわかる文章にすること        
+            ・#共感要素のような言い回しの文章を入れること        
+            ・#限定要素のような言い回しの文章を入れること        
+            ・#Webページ内容を踏まえて作成すること        
+            ・自然で簡潔な日本語の文章で作成すること        
+            ・160文字以内で記述すること        
+                    
+                    
+            #ブログ内容        
+            [".$title."]        
+            [
+            ".$content."
+            ]        
+                    
+                    
+            #出力形式        
+            プロンプトはエコーせず、下記の形式で出力してください。        
+            『作成したメタディスクリプション』     
+            ";
+    }
 }

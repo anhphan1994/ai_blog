@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\BlogPost;
 use App\Models\BlogPostHistory;
 use App\Models\BlogPostParameter;
+use App\Models\Media;
+use App\Models\SeoSetting;
 use App\Repositories\Interfaces\BlogPostRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
@@ -149,5 +151,22 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     public function getPostContent($id)
     {
         return $this->model->where('id', $id)->value('content');
+    }
+
+    public function updateSEOSetting($id, $data)
+    {
+        $seo = SeoSetting::where('blog_post_id', $id)->first();
+        if ($seo) {
+            $seo->update($data);
+        } else {
+            $data['blog_post_id'] = $id;
+            $seo = SeoSetting::create($data);
+        }
+        return $seo;
+    }
+
+    public function createMedia($data)
+    {
+        return Media::create($data);
     }
 }
