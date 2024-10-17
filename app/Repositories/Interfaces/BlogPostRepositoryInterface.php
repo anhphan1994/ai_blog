@@ -16,5 +16,7 @@ interface BlogPostRepositoryInterface
     public function getPostStatus($id);
     public function createPostParams($data);
     public function getPostParams($id);
+    public function getPostContent($id);
+
     
 }

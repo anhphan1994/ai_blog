@@ -145,4 +145,9 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     {
         return BlogPostParameter::where('blog_post_id', $id)->first();
     }
+
+    public function getPostContent($id)
+    {
+        return $this->model->where('id', $id)->value('content');
+    }
 }

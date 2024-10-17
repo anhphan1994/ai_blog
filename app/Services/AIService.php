@@ -17,14 +17,16 @@ class AIService
         $this->blogPostRepository = $blogPostRepository;
     }
 
-    public function generateBlogContent($post_id, $short_desc, $keyword, $style, $num_of_section)
+    public function generateBlogContent($post_id, $short_desc, $keyword, $style, $num_of_section, $title = null, $outline = null)
     {
         $is_error = false;
         $no_response_msg = config('ai.response.no_response');
 
         $title_outline = $this->generateTitleOutline($short_desc, $keyword, $style, $num_of_section);
-        $title = $title_outline['title'];
-        $outline = $title_outline['outline'];
+    
+        $title = !empty($title) ? $title : $title_outline['title'];
+        $outline = !empty($outline) ? $outline : $title_outline['outline'];
+
         if(empty($title)){
             $is_error = true;
         }
@@ -35,7 +37,6 @@ class AIService
 
         $main_content = $this->generateMainContent($title, $short_desc, $keyword, $style, $num_of_section, $outline);
         
-
         if($is_error){
             Log::info(message: 'Error in generating blog content');
         }else{

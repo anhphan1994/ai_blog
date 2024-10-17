@@ -216,9 +216,8 @@ class BlogPostController extends Controller
         if ($request->ajax()) {
             set_time_limit(0);
             $post_params = $this->service->getPostParams($request->get('post_id'));
-            
-            $title = $this->ai_service->generateBlogTitle($post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number);
-            return response()->json(data: ['title' => $title]);
+            $res = $this->ai_service->generateTitleOutline($post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number);
+            return response()->json(data: ['title' => $res['title']]);
         }
     }
 
@@ -226,9 +225,10 @@ class BlogPostController extends Controller
     {
         if ($request->ajax()) {
             set_time_limit(0);
+            
             $post_params = $this->service->getPostParams($request->get('post_id'));
-            $outline = $this->ai_service->generateBlogOutline($post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number);
-            return response()->json(data: ['outline' => $outline]);
+            $res = $this->ai_service->generateTitleOutline($post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number);
+            return response()->json(data: ['outline' => $res['outline']]);
         }
     }
 
@@ -236,9 +236,47 @@ class BlogPostController extends Controller
     {
         if ($request->ajax()) {
             set_time_limit(0);
+            $title = $request->get('title') ?? '';
+            $outline = $request->get('outline') ?? '';
+            $post_id = $request->get('post_id');
             $post_params = $this->service->getPostParams($request->get('post_id'));
-            $this->ai_service->generateBlogContent($request->get('post_id'), $post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number);
-            return response()->json(['message' => 'Blog content generated']);
+
+            $this->ai_service->generateBlogContent($request->get('post_id'), $post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number, $title, $outline);
+            
+            $content = $this->service->getPostContent($post_id); 
+
+            return response()->json(data: ['content' => $content]);
         }
+    }
+
+    public function ajaxUpdateBlogPost(Request $request)
+    {
+        if ($request->ajax()) {
+            $post_id = $request->get('post_id');
+            $data = $request->all();
+            Log::info('AJAX update blog post requested', ['post_id' => $post_id, 'data' => $data]);
+            $this->service->updatePost($post_id, $data);
+            return response()->json(['message' => 'Post updated', 'status' => 'success']);
+        }
+    }
+
+    public function postSetting($id)
+    {
+        Log::info('Showing post setting', ['post_id' => $id]);
+        $post = $this->service->getPostById($id);
+        $post->url = route('post.show', ['id' => $id]);
+
+        $seo_setting = $this->service->getBLogSEOSetting($id);
+
+        return view('blog_posts.post_setting', compact('post', 'seo_setting'));
+    }
+
+
+    public function uploadImage(Request $request)
+    {
+        $image = $request->file('file');
+        $path = $image->store('images', 'public');
+
+        return response()->json(['location' => asset('storage/' . $path)]);
     }
 }

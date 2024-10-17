@@ -39,8 +39,8 @@ Route::prefix('post')->group(function () {
     Route::get('/show/{id}', [BlogPostController::class, 'show'])->name('post.show');
     Route::post('/update/{id}', [BlogPostController::class, 'update'])->name('post.update');
     Route::get('/duplicate/{id}', [BlogPostController::class, 'duplicate'])->name('post.duplicate');
-    //result
     Route::get('/result/{id}', [BlogPostController::class, 'result'])->name('post.result');
+    Route::get('/post-setting/{id}', [BlogPostController::class, 'postSetting'])->name('post.postSetting');
     //ajax
     Route::get('/ajax-list-post', [BlogPostController::class, 'ajaxListPost'])->name('post.ajax.list');
     Route::get('/ajax-list-status', [BlogPostController::class, 'ajaxListStatus'])->name('post.ajax.status');
@@ -54,7 +54,9 @@ Route::prefix('post')->group(function () {
     Route::post('/ajax-generate-blog-title', [BlogPostController::class, 'ajaxGenerateBlogTitle'])->name('post.ajax.generateBlogTitle');
     Route::post('/ajax-generate-blog-outline', [BlogPostController::class, 'ajaxGenerateBlogOutline'])->name('post.ajax.generateBlogOutline');
     Route::post('/ajax-generate-blog-content', [BlogPostController::class, 'ajaxGenerateBlogContent'])->name('post.ajax.generateBlogContent');
+    Route::post('/ajax-update-blog-post', [BlogPostController::class, 'ajaxUpdateBlogPost'])->name('post.ajax.updateBlogPost');
 
+    Route::post('/upload_image', [BlogPostController::class, 'uploadImage'])->name('post.upload_image');
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');

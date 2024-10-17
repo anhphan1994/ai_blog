@@ -82,4 +82,14 @@ class BlogPostService
     {
         return $this->repository->getPostParams($id);
     }
+
+    public function getPostContent($id = null)
+    {
+        return $this->repository->getPostContent($id);
+    }
+
+    public function getBLogSEOSetting($id = null)
+    {
+        return $this->repository->getBLogSEOSetting($id);
+    }
 }

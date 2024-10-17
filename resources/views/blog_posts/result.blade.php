@@ -76,7 +76,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="" class="btn st2">保存して投稿設定へ進む</a>
+                    <a href="javascript:void(0);" class="btn st2" id="updateBlogPost">保存して投稿設定へ進む</a>
                 </div>
             </div>
         </div>
@@ -89,6 +89,8 @@
         var URL_GENERATE_TITLE = "{{ route('post.ajax.generateBlogTitle') }}";
         var URL_GENERATE_OUTLINE = "{{ route('post.ajax.generateBlogOutline') }}";
         var URL_GENERATE_CONTENT = "{{ route('post.ajax.generateBlogContent') }}";
+        var URL_UPDATE_BLOG_POST = "{{ route('post.ajax.updateBlogPost') }}";
+
         $(document).ready(function() {
             $('#generate_title_btn').click(function() {
                 generateTitle();
@@ -100,6 +102,13 @@
 
             $('#generate_content_btn').click(function() {
                 generateContent();
+            });
+
+            $('#updateBlogPost').click(function() {
+                var title = $('#title_value').val();
+                var outline = $('#outline_value').val();
+                var content = $('#content_value').val();
+                updateBlogPost(title, outline, content);
             });
         });
 
@@ -113,6 +122,9 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                beforeSend: function() {
+                    $('#title_value').val('生成中...');
+                },
                 success: function(data) {
                     $('#title_value').val(data.title);
                 }
@@ -125,6 +137,10 @@
                 type: 'POST',
                 data: {
                     post_id: '{{ $post->id }}',
+                    title: $('#title_value').val(),
+                },
+                beforeSend: function() {
+                    $('#outline_value').val('生成中...');
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -141,12 +157,38 @@
                 type: 'POST',
                 data: {
                     post_id: '{{ $post->id }}',
+                    title: $('#title_value').val(),
+                    outline: $('#outline_value').val(),
+                },
+                beforeSend: function() {
+                    $('#content_value').val('生成中...');
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(data) {
                     $('#content_value').val(data.content);
+                }
+            });
+        }
+
+        function updateBlogPost(title, outline, content) {
+            $.ajax({
+                url: URL_UPDATE_BLOG_POST,
+                type: 'POST',
+                data: {
+                    post_id: '{{ $post->id }}',
+                    title: title,
+                    outline: outline,
+                    content: content,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if (data.status == 'success') {
+                        window.location.href = '{{ route('post.postSetting', $post->id) }}';
+                    }
                 }
             });
         }
