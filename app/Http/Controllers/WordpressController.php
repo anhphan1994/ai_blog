@@ -29,7 +29,8 @@ class WordpressController extends Controller
         $authorization = base64_encode($USERNAME . ':' . $PASSWORD);
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . $authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
         ])->timeout(5) // Timeout sau 5 giây
         ->post('https://ai_wordpress.test/wp-json/wp/v2/posts', $data);
 
@@ -39,11 +40,17 @@ class WordpressController extends Controller
 
 
         if ($response->successful()) {
+            $article =  $response->json();
+
+            if(!$article){
+                echo 'Không tìm thấy thông tin article sau khi publishing.'
+            }
+
             echo "Bài viết đã được đăng thành công!";
             echo '<br>';
-
             var_dump($response->body());
         } else {
+            var_dump($response->status());
             echo "Có lỗi xảy ra: " . $response->body();
         }
 

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=960, user-scalable=yes">
     <meta name="description" content="">
     <meta name="Keywords" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Title</title>
     <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/jquery.modal.min.css') }}" />
@@ -30,5 +31,5 @@
     <script src="{{ asset('js/script.js') }}"></script>
     @yield('custom_js')
 </body>
-
+@yield('custom_modal')
 </html>

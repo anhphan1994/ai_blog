@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('blog_post_id');
-            $table->string('file_name');
-            $table->string('file_url');
-            $table->string('file_type');
+            $table->unsignedBigInteger('blog_post_id')->nullable();
+            $table->string('file_name')->nullable();
+            $table->string('file_url')->nullable();
+            $table->string('file_type')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

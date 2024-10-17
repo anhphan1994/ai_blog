@@ -18,6 +18,10 @@ class BlogPostService
         return $this->repository->getAll($params);
     }
 
+    public function countTotalPost($params = [])
+    {
+        return $this->repository->getAll($params, true);
+    }
     public function getPostById($id = null)
     {
         return $this->repository->getById($id);
@@ -41,9 +45,70 @@ class BlogPostService
     public function deleteMultiPosts($ids = [])
     {
         $result = [];
+
         foreach ($ids as $id) {
             $result[] = $this->deletePost($id);
         }
         return $result;
+    }
+
+    public function getAllStatus()
+    {
+        return $this->repository->getAllStatus();
+    }
+
+    public function getAllPeriod()
+    {
+        return $this->repository->getAllPeriod();
+    }
+
+    public function duplicatePost($id = null)
+    {
+        return $this->repository->duplicate($id);
+    }
+
+    public function previewPost($id = null)
+    {
+        return $this->repository->getBLogSEOSetting($id);
+    }
+
+    public function getPostStatus($id = null)
+    {
+        return $this->repository->getPostStatus($id);
+    }
+
+    public function createPostParams($data = [])
+    {
+        return $this->repository->createPostParams($data);
+    }
+
+    public function getPostParams($id = null)
+    {
+        return $this->repository->getPostParams($id);
+    }
+
+    public function getPostContent($id = null)
+    {
+        return $this->repository->getPostContent($id);
+    }
+
+    public function getBLogSEOSetting($id = null)
+    {
+        return $this->repository->getBLogSEOSetting($id);
+    }
+
+    public function updateSEOSetting($id = null, array $data = [])
+    {
+        return $this->repository->updateSEOSetting($id, $data);
+    }
+
+    public function createMedia($data = [])
+    {
+        return $this->repository->createMedia($data);
+    }
+
+    public function updateTag($id = null, array $data = [])
+    {
+        return $this->repository->updateTag($id, $data);
     }
 }

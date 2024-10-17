@@ -19,7 +19,8 @@ class AIHelper
         
         $endpoint = config('ai.endpoint');
         $apiKey = config('ai.api_key');
-
+        $no_response_msg = config('ai.response.no_response');
+        
         $response = Http::timeout(300)->post($endpoint, [
             'api_key' => [$apiKey],
             'chat_type' => ['chat'],
@@ -30,9 +31,9 @@ class AIHelper
         // check if the response is not successful
         if ($response->status() === 400) {
             Log::error('AI response error: ' . json_encode($response->json()));
-            return 'No response from AI.'; 
+            return $no_response_msg; 
         }
 
-        return $response->json()['response_chat'][0] ?? 'No response from AI.';
+        return $response->json()['response_chat'][0] ?? $no_response_msg;
     }
 }

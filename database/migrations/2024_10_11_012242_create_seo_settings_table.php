@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('seo_settings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('blog_post_id');
-            $table->string('meta_title');
-            $table->string('meta_description');
-            $table->string('meta_keywords');
+            $table->unsignedBigInteger('blog_post_id')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

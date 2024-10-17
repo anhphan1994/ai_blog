@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('platform_accounts', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('platform_name');
-            $table->string('username');
-            $table->string('api_key');
+            $table->uuid('uuid')->unique()->nullable();
+            $table->string('platform_name')->nullable();
+            $table->string('username')->nullable();
+            $table->string('api_key')->nullable();
             $table->string('password')->nullable();
             $table->timestamps();
             $table->softDeletes();

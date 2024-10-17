@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('post_schedules', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('blog_post_id');
-            $table->timestamp('scheduled_at');
+            $table->unsignedBigInteger('blog_post_id')->nullable();
+            $table->timestamp('scheduled_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

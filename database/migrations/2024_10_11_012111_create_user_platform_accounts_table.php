@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('user_platform_accounts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('platform_account_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('platform_account_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

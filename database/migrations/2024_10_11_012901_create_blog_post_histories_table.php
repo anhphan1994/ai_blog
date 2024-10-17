@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('blog_post_histories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('blog_post_id');
-            $table->text('title');
-            $table->text('content');
-            $table->text('short_content');
-            $table->unsignedBigInteger('user_id');
-            $table->string('status');
+            $table->unsignedBigInteger('blog_post_id')->nullable();
+            $table->text('title')->nullable();
+            $table->text('content')->nullable();
+            $table->text('short_content')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

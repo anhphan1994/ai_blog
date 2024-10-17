@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('blog_post_tags', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('blog_post_id');
-            $table->unsignedBigInteger('post_tag_id');
+            $table->unsignedBigInteger('blog_post_id')->nullable();
+            $table->unsignedBigInteger('post_tag_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

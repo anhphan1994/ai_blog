@@ -4,19 +4,22 @@ namespace App\Repositories;
 
 use App\Models\BlogPost;
 use App\Models\BlogPostHistory;
+use App\Models\BlogPostParameter;
+use App\Models\Media;
+use App\Models\SeoSetting;
 use App\Repositories\Interfaces\BlogPostRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
 class BlogPostRepository implements BlogPostRepositoryInterface
 {
     protected $model;
-    protected $perPage = 10;
+    protected $perPage = 50;
     public function __construct(BlogPost $model)
     {
         $this->model = $model;
     }
 
-    public function getAll($params)
+    public function getAll($params, $count = false)
     {
         $query = $this->model->query();
         if (isset($params['platform_id']) && !empty($params['platform_id'])) {
@@ -26,14 +29,20 @@ class BlogPostRepository implements BlogPostRepositoryInterface
         if (isset($params['user_id']) && !empty($params['user_id'])) {
             $query->where('blog_posts.user_id', $params['user_id']);
         }
-        if (isset($params['status']) && !empty($params['status'])) {
+        if (isset($params['status']) && !empty($params['status']) && $params['status'] != 'all') {
             $query->where('blog_posts.status', $params['status']);
         }
         if (isset($params['search']) && !empty($params['search'])) {
             $query->where('blog_posts.title', 'like', '%' . $params['search'] . '%');
         }
+        if (isset($params['period']) && !empty($params['period']) && $params['period'] != 'all') {
+            $query->whereRaw('DATE_FORMAT(blog_posts.created_at, "%Y-%m") = ?', [$params['period']]);
+        }
         $query->orderBy('blog_posts.id', 'desc');
 
+        if ($count) {
+            return $query->count();
+        }
         return $query->paginate($this->perPage);
     }
 
@@ -60,8 +69,6 @@ class BlogPostRepository implements BlogPostRepositoryInterface
 
     public function update($id, array $data)
     {
-
-
         $post = $this->model->findOrFail($id);
         $post->update($data);
 
@@ -86,5 +93,88 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     public function createHistory($data)
     {
         return BlogPostHistory::create($data);
+    }
+
+    public function getAllStatus()
+    {
+       return $this->model->select('status')->distinct()->get()->pluck('status');
+    }
+
+    public function getAllPeriod()
+    {
+        return $this->model->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as period')->distinct()->get()->pluck('period');
+    }
+
+    public function duplicate($id)
+    {
+        $post = $this->model->findOrFail($id);
+        $data = $post->toArray();
+        unset($data['id']);
+        $data['title'] = $data['title'] . ' (copy)';
+        $data['status'] = 'draft';
+        $duplicatedPost = $this->model->create($data);
+
+        $this->createHistory([
+            'blog_post_id' => $duplicatedPost->id,
+            'title' => $duplicatedPost->title,
+            'content' => $duplicatedPost->content,
+            'short_content' => $duplicatedPost->short_content,
+            'status' => $duplicatedPost->status,
+            'user_id' => $duplicatedPost->user_id,
+        ]);
+
+        return $duplicatedPost;
+    }
+
+    public function getBLogSEOSetting($id)
+    {
+        
+        $query = $this->model->query();
+        $query->leftJoin('seo_settings AS seo', 'seo.blog_post_id', '=', 'blog_posts.id');
+        $query->select('seo.meta_title', 'seo.meta_description', 'seo.meta_keywords');
+        $query->where('blog_posts.id', $id);
+        return $query->first();
+    }
+
+    public function getPostStatus($id)
+    {
+        return $this->model->where('id', $id)->value('status');
+    }
+
+    public function createPostParams($data)
+    {
+        return BlogPostParameter::create($data);
+    }
+
+    public function getPostParams($id)
+    {
+        return BlogPostParameter::where('blog_post_id', $id)->first();
+    }
+
+    public function getPostContent($id)
+    {
+        return $this->model->where('id', $id)->value('content');
+    }
+
+    public function updateSEOSetting($id, $data)
+    {
+        $seo = SeoSetting::where('blog_post_id', $id)->first();
+        if ($seo) {
+            $seo->update($data);
+        } else {
+            $data['blog_post_id'] = $id;
+            $seo = SeoSetting::create($data);
+        }
+        return $seo;
+    }
+
+    public function createMedia($data)
+    {
+        return Media::create($data);
+    }
+
+    public function updateTag($id, $data)
+    {
+        return 1;
     }
 }

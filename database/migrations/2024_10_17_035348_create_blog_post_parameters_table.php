@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('post_metrics', function (Blueprint $table) {
+        Schema::create('blog_post_parameters', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('blog_post_id')->nullable();
-            $table->integer('views')->default(0)->nullable();
-            $table->integer('likes')->default(0)->nullable();
-            $table->integer('comments')->default(0)->nullable();
+            $table->string('short_description')->nullable();
+            $table->string(column: 'post_style')->nullable();
+            $table->string(column: 'keywords')->nullable();
+            $table->string(column: 'section_number')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_metrics');
+        Schema::dropIfExists('blog_post_parameters');
     }
 };

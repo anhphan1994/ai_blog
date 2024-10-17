@@ -30,6 +30,7 @@ if (!function_exists('getStatusName')) {
                 break;
             case 'published':
                 $statusName = '公開中';
+                break;
             case 'deleted':
                 $statusName = '削除';
                 break;
