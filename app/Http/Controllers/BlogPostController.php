@@ -44,7 +44,7 @@ class BlogPostController extends Controller
 
     public function ajaxListPost(Request $request)
     {
-        if ($request->ajax()) {
+        // if ($request->ajax()) {
             $platform_id = $request->get('platform_id') ?? null;
             $user_id = Auth::id();
             $search = $request->get('search') ?? null;
@@ -66,7 +66,7 @@ class BlogPostController extends Controller
             $view = view('partials.ajax.list_post', compact('blog_posts'))->render();
 
             return response()->json(['html' => $view]);
-        }
+        // }
     }
 
     public function ajaxListStatus(Request $request)
@@ -170,7 +170,9 @@ class BlogPostController extends Controller
                 'section_number' => "4",
                 'keywords' => "Laz選手とImperial hal選手",
             ];
+            
             $post_id = $request->get('post_id');
+            $this->service->createPostParams(['blog_post_id' => $post_id] + $params);
 
             Log::info('AJAX generate post requested', ['params' => $params]);
             $this->service->updatePost($post_id, ['status' => BlogPost::STATUS_GENERATING]);
@@ -195,7 +197,6 @@ class BlogPostController extends Controller
 
     public function result($id)
     {
-        dd('ok');
         Log::info('Showing post result', ['post_id' => $id]);
         $post = $this->service->getPostById($id);
         return view('blog_posts.result', compact('post'));

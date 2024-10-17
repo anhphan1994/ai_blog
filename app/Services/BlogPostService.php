@@ -72,4 +72,9 @@ class BlogPostService
     {
         return $this->repository->getPostStatus($id);
     }
+
+    public function createPostParams($data = [])
+    {
+        return $this->repository->createPostParams($data);
+    }
 }

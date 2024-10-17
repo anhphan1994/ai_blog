@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\BlogPost;
 use App\Models\BlogPostHistory;
+use App\Models\BlogPostParameter;
 use App\Repositories\Interfaces\BlogPostRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
@@ -133,5 +134,10 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     public function getPostStatus($id)
     {
         return $this->model->where('id', $id)->value('status');
+    }
+
+    public function createPostParams($data)
+    {
+        return BlogPostParameter::create($data);
     }
 }

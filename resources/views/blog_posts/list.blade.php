@@ -109,7 +109,6 @@
                 var statusText = $(this).text();
                 $('#status_filter span').text(statusText);
                 status = $(this).data('status_code');
-                console.log(status);
                 getBlogPosts();
             });
 
@@ -117,7 +116,6 @@
                 var periodText = $(this).text();
                 $('#period_filter span').text(periodText);
                 period = $(this).data('period');
-                console.log(period);
                 getBlogPosts();
             });
 
@@ -186,7 +184,7 @@
                     period: period ?? 'all'
                 },
                 success: function(response) {
-                    $('#blog_posts_list').html(response.html);
+                    $('#blog_posts_list').html('aaaaa');
                 }
             });
         }
