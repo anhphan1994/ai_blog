@@ -1,4 +1,4 @@
-re<?php
+<?php
 return [
     'post_style' => [
         'normal' => '一般的な言葉遣い',

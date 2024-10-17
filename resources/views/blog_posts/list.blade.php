@@ -184,7 +184,7 @@
                     period: period ?? 'all'
                 },
                 success: function(response) {
-                    $('#blog_posts_list').html('aaaaa');
+                    $('#blog_posts_list').html(response.html);
                 }
             });
         }
