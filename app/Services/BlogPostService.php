@@ -77,4 +77,29 @@ class BlogPostService
     {
         return $this->repository->createPostParams($data);
     }
+
+    public function getPostParams($id = null)
+    {
+        return $this->repository->getPostParams($id);
+    }
+
+    public function getPostContent($id = null)
+    {
+        return $this->repository->getPostContent($id);
+    }
+
+    public function getBLogSEOSetting($id = null)
+    {
+        return $this->repository->getBLogSEOSetting($id);
+    }
+
+    public function updateSEOSetting($id = null, array $data = [])
+    {
+        return $this->repository->updateSEOSetting($id, $data);
+    }
+
+    public function createMedia($data = [])
+    {
+        return $this->repository->createMedia($data);
+    }
 }

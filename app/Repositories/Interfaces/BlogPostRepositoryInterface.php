@@ -15,4 +15,9 @@ interface BlogPostRepositoryInterface
     public function getBLogSEOSetting($id);
     public function getPostStatus($id);
     public function createPostParams($data);
+    public function getPostParams($id);
+    public function getPostContent($id);
+    public function updateSEOSetting($id, $data);
+    public function createMedia($data);
+    
 }

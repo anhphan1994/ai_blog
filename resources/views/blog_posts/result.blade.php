@@ -15,9 +15,9 @@
                     <p class="title">見出し</p>
                     @php
                         $outline = $post->outline;
-                        $outline = str_replace("\n", "<br>", $outline);
+                        $outline = str_replace("\n", '<br>', $outline);
                     @endphp
-                    <h2>{!!$outline!!}</h2>
+                    <h2>{!! $outline !!}</h2>
                 </div>
                 <div class="post_bot_r noBot">
                     <div class="p_edit">
@@ -27,11 +27,11 @@
                                 <p class="e_txt">記事のタイトルを入力します。</p>
                                 <div class="e_action_r">
                                     <span>50ポイントを使用</span>
-                                    <button>タイトルを再生成</button>
+                                    <button id="generate_title_btn">タイトルを再生成</button>
                                 </div>
                             </div>
                             <div class="box_gr">
-                                <textarea oninput="auto_grow(this)" class="textareaOnload" id="title_value">{{$post->title}}</textarea>
+                                <textarea oninput="auto_grow(this)" class="textareaOnload" id="title_value">{{ $post->title }}</textarea>
                             </div>
                         </div>
                         <div class="e_it">
@@ -40,11 +40,11 @@
                                 <p class="e_txt">記事内のセクションを入力します。</p>
                                 <div class="e_action_r">
                                     <span>50ポイントを使用</span>
-                                    <button>セクションを再生成</button>
+                                    <button id="generate_outline_btn">セクションを再生成</button>
                                 </div>
                             </div>
                             <div class="box_gr">
-                                <textarea oninput="auto_grow(this)" class="textareaOnload" id="outline_value">{{$post->outline}}</textarea>
+                                <textarea oninput="auto_grow(this)" class="textareaOnload" id="outline_value">{{ $post->outline }}</textarea>
                             </div>
                         </div>
                         <div class="e_it">
@@ -68,15 +68,15 @@
                                 </div>
                                 <div class="e_action_r">
                                     <span>50ポイントを使用</span>
-                                    <button>本文を再生成</button>
+                                    <button id="generate_content_btn">本文を再生成</button>
                                 </div>
                             </div>
                             <div class="box_gr">
-                                <textarea oninput="auto_grow(this)" class="textareaOnload" id="content_value">{{$post->content}}</textarea>
+                                <textarea oninput="auto_grow(this)" class="textareaOnload" id="content_value">{{ $post->content }}</textarea>
                             </div>
                         </div>
                     </div>
-                    <a href="" class="btn st2">保存して投稿設定へ進む</a>
+                    <a href="javascript:void(0);" class="btn st2" id="updateBlogPost">保存して投稿設定へ進む</a>
                 </div>
             </div>
         </div>
@@ -86,8 +86,111 @@
 @endsection
 @section('custom_js')
     <script>
-        $(document).ready(function() {
+        var URL_GENERATE_TITLE = "{{ route('post.ajax.generateBlogTitle') }}";
+        var URL_GENERATE_OUTLINE = "{{ route('post.ajax.generateBlogOutline') }}";
+        var URL_GENERATE_CONTENT = "{{ route('post.ajax.generateBlogContent') }}";
+        var URL_UPDATE_BLOG_POST = "{{ route('post.ajax.updateBlogPost') }}";
 
+        $(document).ready(function() {
+            $('#generate_title_btn').click(function() {
+                generateTitle();
+            });
+
+            $('#generate_outline_btn').click(function() {
+                generateOutline();
+            });
+
+            $('#generate_content_btn').click(function() {
+                generateContent();
+            });
+
+            $('#updateBlogPost').click(function() {
+                var title = $('#title_value').val();
+                var outline = $('#outline_value').val();
+                var content = $('#content_value').val();
+                updateBlogPost(title, outline, content);
+            });
         });
+
+        function generateTitle() {
+            $.ajax({
+                url: URL_GENERATE_TITLE,
+                type: 'POST',
+                data: {
+                    post_id: '{{ $post->id }}',
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    $('#title_value').val('生成中...');
+                },
+                success: function(data) {
+                    $('#title_value').val(data.title);
+                }
+            });
+        }
+
+        function generateOutline() {
+            $.ajax({
+                url: URL_GENERATE_OUTLINE,
+                type: 'POST',
+                data: {
+                    post_id: '{{ $post->id }}',
+                    title: $('#title_value').val(),
+                },
+                beforeSend: function() {
+                    $('#outline_value').val('生成中...');
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    $('#outline_value').val(data.outline);
+                }
+            });
+        }
+
+        function generateContent() {
+            $.ajax({
+                url: URL_GENERATE_CONTENT,
+                type: 'POST',
+                data: {
+                    post_id: '{{ $post->id }}',
+                    title: $('#title_value').val(),
+                    outline: $('#outline_value').val(),
+                },
+                beforeSend: function() {
+                    $('#content_value').val('生成中...');
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    $('#content_value').val(data.content);
+                }
+            });
+        }
+
+        function updateBlogPost(title, outline, content) {
+            $.ajax({
+                url: URL_UPDATE_BLOG_POST,
+                type: 'POST',
+                data: {
+                    post_id: '{{ $post->id }}',
+                    title: title,
+                    outline: outline,
+                    content: content,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if (data.status == 'success') {
+                        window.location.href = '{{ route('post.postSetting', $post->id) }}';
+                    }
+                }
+            });
+        }
     </script>
 @endsection
