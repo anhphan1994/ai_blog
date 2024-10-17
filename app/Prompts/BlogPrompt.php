@@ -56,7 +56,7 @@ class BlogPrompt
         ... ";
     }
 
-    public static function generateSecondPrompt($title, $short_desc, $keyword, $style, $num_of_section){
+    public static function generateFirstSectionContentPrompt($title, $short_desc, $keyword, $style, $num_of_section){
         return "
             #あなたの役割
             SEOの原則に基づいて効果的なブログタイトル、本文を作成するプロフェッショナルです。私の目的は、検索エンジンでの上位表示を狙い、サイトのトラフィックとエンゲージメントを増加させるための魅力的なブログ記事を作成することです。
