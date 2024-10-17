@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Log;
 class BlogPostRepository implements BlogPostRepositoryInterface
 {
     protected $model;
-    protected $perPage = 10;
+    protected $perPage = 50;
     public function __construct(BlogPost $model)
     {
         $this->model = $model;
     }
 
-    public function getAll($params)
+    public function getAll($params, $count = false)
     {
         $query = $this->model->query();
         if (isset($params['platform_id']) && !empty($params['platform_id'])) {
@@ -40,6 +40,9 @@ class BlogPostRepository implements BlogPostRepositoryInterface
         }
         $query->orderBy('blog_posts.id', 'desc');
 
+        if ($count) {
+            return $query->count();
+        }
         return $query->paginate($this->perPage);
     }
 
@@ -168,5 +171,10 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     public function createMedia($data)
     {
         return Media::create($data);
+    }
+
+    public function updateTag($id, $data)
+    {
+        return 1;
     }
 }

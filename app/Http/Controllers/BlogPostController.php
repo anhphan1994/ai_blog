@@ -28,16 +28,9 @@ class BlogPostController extends Controller
             $platform_id = $request->get('platform_id') ?? null;
             $status = $request->get('status') ?? null;
 
-            $params = [
-                'platform_id' => $platform_id,
-                'status' => $status,
-            ];
-
-            $blog_posts = $this->service->getAllPosts($params);
-
             trackInfo('Loading blog posts for platform', ['platform_id' => $platform_id]);
 
-            return view('blog_posts.list', compact('platform_id', 'blog_posts'));
+            return view('blog_posts.list', compact('platform_id'));
         } catch (\Exception $e) {
             trackError('Error loading dashboard', ['error' => $e->getMessage()]);
             return redirect()->route('error.page')->with('error', 'Unable to load dashboard');
@@ -47,29 +40,28 @@ class BlogPostController extends Controller
 
     public function ajaxListPost(Request $request)
     {
-        // if ($request->ajax()) {
-        $platform_id = $request->get('platform_id') ?? null;
-        $user_id = Auth::id();
-        $search = $request->get('search') ?? null;
-        $status = $request->get('status') ?? 'all';
-        $period = $request->get('period') ?? 'all';
+        if ($request->ajax()) {
+            $platform_id = $request->get('platform_id') ?? null;
+            $search = $request->get('search') ?? null;
+            $status = $request->get('status') ?? 'all';
+            $period = $request->get('period') ?? 'all';
+            $params = [
+                'platform_id' => $platform_id,
+                'search' => $search,
+                'status' => $status,
+                'period' => $period,
+            ];
 
-        $params = [
-            'platform_id' => $platform_id,
-            'user_id' => $user_id,
-            'search' => $search,
-            'status' => $status,
-            'period' => $period,
-        ];
+            Log::info('AJAX list post requested', ['params' => $params]);
 
-        Log::info('AJAX list post requested', ['params' => $params]);
+            $blog_posts = $this->service->getAllPosts($params);
 
-        $blog_posts = $this->service->getAllPosts($params);
+            $total_post = $this->service->countTotalPost($params);
 
-        $view = view('partials.ajax.list_post', compact('blog_posts'))->render();
+            $view = view('partials.ajax.list_post', compact('blog_posts'))->render();
 
-        return response()->json(['html' => $view]);
-        // }
+            return response()->json(['html' => $view, 'total_post' => $total_post]);
+        }
     }
 
     public function ajaxListStatus(Request $request)
@@ -225,7 +217,7 @@ class BlogPostController extends Controller
     {
         if ($request->ajax()) {
             set_time_limit(0);
-            
+
             $post_params = $this->service->getPostParams($request->get('post_id'));
             $res = $this->ai_service->generateTitleOutline($post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number);
             return response()->json(data: ['outline' => $res['outline']]);
@@ -239,11 +231,17 @@ class BlogPostController extends Controller
             $title = $request->get('title') ?? '';
             $outline = $request->get('outline') ?? '';
             $post_id = $request->get('post_id');
-            $post_params = $this->service->getPostParams($request->get('post_id'));
+            $tags = $request->get('tags') ?? '';
 
-            $this->ai_service->generateBlogContent($request->get('post_id'), $post_params->short_description, $post_params->keywords, $post_params->post_style, $post_params->section_number, $title, $outline);
-            
-            $content = $this->service->getPostContent($post_id); 
+            $post_params = $this->service->getPostParams($request->get('post_id'));
+            $keywords = $post_params->keywords;
+            if (!empty($tags)) {
+                $keywords .= ',' . implode(',', $tags);
+            }
+
+            $this->ai_service->generateBlogContent($request->get('post_id'), $post_params->short_description, $keywords, $post_params->post_style, $post_params->section_number, $title, $outline);
+
+            $content = $this->service->getPostContent($post_id);
 
             return response()->json(data: ['content' => $content]);
         }
@@ -255,24 +253,37 @@ class BlogPostController extends Controller
             $post_id = $request->get('post_id');
             $data = $request->all();
             Log::info('AJAX update blog post requested', ['post_id' => $post_id, 'data' => $data]);
-            
-            if(!empty($data['source_from']) && $data['source_from'] == 'seo_setting'){
+
+            if (!empty($data['source_from']) && $data['source_from'] == 'seo_setting') {
                 $seo_setting_data = [
                     'meta_title' => $data['meta_title'] ?? '',
                     'meta_description' => $data['meta_description'] ?? '',
                     'meta_keywords' => $data['meta_keywords'] ?? '',
                 ];
                 $this->service->updateSEOSetting($post_id, $seo_setting_data);
-            }else{
+            } else {
+                $post_params = $this->service->getPostParams($post_id);
+                $tags = $data['tags'] ?? [];
+                $keywords = $post_params->keywords;
+
+                if (!empty($tags)) {
+                    $keywords .= ',' . implode(',', $tags);
+                }
+                
+                $data['meta_keywords'] = $keywords;
                 $data['meta_description'] = $this->getMetaDescription($post_id);
                 $this->service->updateSEOSetting($post_id, $data);
             }
 
-            if (isset($data['source_from'])) unset($data['source_from']);
-            if (isset($data['meta_title'])) unset($data['meta_title']);
-            if (isset($data['meta_description'])) unset($data['meta_description']);
-            if (isset($data['meta_keywords'])) unset($data['meta_keywords']);
-            
+            if (isset($data['source_from']))
+                unset($data['source_from']);
+            if (isset($data['meta_title']))
+                unset($data['meta_title']);
+            if (isset($data['meta_description']))
+                unset($data['meta_description']);
+            if (isset($data['meta_keywords']))
+                unset($data['meta_keywords']);
+
             $this->service->updatePost($post_id, $data);
 
 
@@ -311,7 +322,18 @@ class BlogPostController extends Controller
 
     private function getMetaDescription($post_id)
     {
-        $meta_description =  $this->ai_service->generateMetaDescription($post_id);
+        $meta_description = $this->ai_service->generateMetaDescription($post_id);
         return $meta_description;
+    }
+
+    public function ajaxUpdateTag(Request $request)
+    {
+        if ($request->ajax()) {
+            $post_id = $request->get('post_id');
+            $tag = $request->get('tag');
+            Log::info('AJAX update tag requested', ['post_id' => $post_id, 'tag' => $tag]);
+            $this->service->updateTag($post_id, $tag);
+            return response()->json(['message' => 'Tags updated', 'status' => 'success']);
+        }
     }
 }

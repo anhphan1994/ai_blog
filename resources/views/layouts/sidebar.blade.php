@@ -1,6 +1,6 @@
 <aside class="aside" id="aside">
     <div class="aside_top">
-        <a class="aside_logo" href=""><img src="{{ asset('img/logo.png') }}" alt=""></a>
+        <a class="aside_logo" href="{{route('post.dashboard')}}"><img src="{{ asset('img/logo.png') }}" alt=""></a>
         <button class="btn_action" id="btn_action"></button>
     </div>
     <div class="aside_blog">

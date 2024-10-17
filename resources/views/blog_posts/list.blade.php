@@ -15,7 +15,7 @@
             <div class="list_bd">
                 <div class="list_bd_head">
                     <div class="list_bd_head_l">
-                        <span>8記事</span>
+                        <span><span id="total_post">8</span>記事</span>
                     </div>
                     <div class="sl_gr">
                         <div class="select selectEvent" id="status_filter"></div>
@@ -185,6 +185,7 @@
                 },
                 success: function(response) {
                     $('#blog_posts_list').html(response.html);
+                    $('#total_post').text(response.total_post);
                 }
             });
         }

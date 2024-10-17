@@ -4,7 +4,7 @@ namespace App\Repositories\Interfaces;
 
 interface BlogPostRepositoryInterface
 {
-    public function getAll($params);
+    public function getAll($params, $count = false);
     public function getById($id);
     public function create(array $data);
     public function update($id, array $data);
@@ -19,5 +19,6 @@ interface BlogPostRepositoryInterface
     public function getPostContent($id);
     public function updateSEOSetting($id, $data);
     public function createMedia($data);
+    public function updateTag($id, $data);
     
 }
