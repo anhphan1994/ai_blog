@@ -6,20 +6,25 @@ use App\Jobs\GeneratePostJob;
 use App\Models\BlogPost;
 use App\Repositories\BlogPostRepository;
 use App\Services\AIService;
+use App\Services\APIService;
 use App\Services\BlogPostService;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as AuthUser;
+use Illuminate\Support\Facades\Cache;
 use Log;
 
 class BlogPostController extends Controller
 {
     protected $service;
     protected $ai_service;
+    protected $api_service;
 
-    public function __construct(BlogPostService $service, AIService $ai_service)
+    public function __construct(BlogPostService $service, AIService $ai_service, APIService $api_service)
     {
         $this->service = $service;
         $this->ai_service = $ai_service;
+        $this->api_service = $api_service;
     }
 
     public function dashboard(Request $request)
@@ -200,7 +205,12 @@ class BlogPostController extends Controller
     {
         Log::info('Showing post result', ['post_id' => $id]);
         $post = $this->service->getPostById($id);
-        return view('blog_posts.result', compact('post'));
+        $auth_user = AuthUser::user();
+        $writer_article = $auth_user ? $auth_user->write_article : 1;
+        $tags = Cache::remember($writer_article, now()->addHours(config('constant.cache_remember_hour')), function() use ($writer_article) {
+            return $this->api_service->getTags($writer_article);
+        });
+        return view('blog_posts.result', compact('post', 'tags'));
     }
 
     public function ajaxGenerateBlogTitle(Request $request)
@@ -269,7 +279,7 @@ class BlogPostController extends Controller
                 if (!empty($tags)) {
                     $keywords .= ',' . implode(',', $tags);
                 }
-                
+
                 $data['meta_keywords'] = $keywords;
                 $data['meta_description'] = $this->getMetaDescription($post_id);
                 $this->service->updateSEOSetting($post_id, $data);

@@ -54,16 +54,9 @@
                             <div class="e_action">
                                 <div class="e_action_l">
                                     <div class="tags">
-                                        <span>映画ロケ地巡り</span>
-                                        <span>インスタ映え</span>
-                                        <span>フォトツアー</span>
-                                        <span>聖地</span>
-                                        <span>新海誠</span>
-                                        <span>ストリートアート</span>
-                                        <span>東京の風景</span>
-                                        <span>隠れスポット</span>
-                                        <span>レトロスポット</span>
-                                        <span>渋谷スカイ</span>
+                                        @foreach($tags as $tag)
+                                            <span>{{ $tag }}</span>
+                                        @endforeach
                                     </div>
                                 </div>
                                 <div class="e_action_r">
@@ -218,7 +211,7 @@
                 }
             });
         }
-        
+
         function saveTag(tag) {
             var post_id = '{{ $post->id }}';
             $.ajax({

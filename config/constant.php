@@ -18,4 +18,5 @@ return [
 
     'section_number' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 
+    'cache_remember_hour' => env('CACHE_REMEMBER_HOUR', 24),
 ];
