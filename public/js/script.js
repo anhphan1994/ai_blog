@@ -82,3 +82,13 @@ jQuery(function ($) {
         e.stopPropagation();
     });
 });
+
+function showSpinner() {
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('spinner').style.display = 'block';
+}
+
+function hideSpinner() {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('spinner').style.display = 'none';
+}

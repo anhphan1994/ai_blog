@@ -60,6 +60,7 @@ Route::group(['prefix'=>'post', 'middleware' => ['auth']], function () {
     Route::post('/upload_image', [BlogPostController::class, 'uploadImage'])->name('post.upload_image');
     Route::post('/ajax-generate-seo-setting', [BlogPostController::class, 'ajaxGenerateSeoSetting'])->name('post.ajax.generateSeoSetting');
     Route::post('/ajax-update-tag', [BlogPostController::class, 'ajaxUpdateTag'])->name('post.ajax.updateTag');
+    Route::post('/ajax-render-image', [BlogPostController::class, 'ajaxRenderImage'])->name('post.ajax.ajaxRenderImage');
 
     Route::group(['middleware' => [
 //        'ajax'
