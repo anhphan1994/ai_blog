@@ -2,32 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PlatformAccount;
 use App\Services\PlatformAccountService;
+use App\Services\WordpressService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class WordpressController extends Controller
 {
     protected PlatformAccountService $platform_account_service;
+    protected WordpressService $wordpress_service;
     protected $uuid = '06018b97-db7d-4c8d-a9e6-e75f6053aa83';
 
-    public function __construct(PlatformAccountService $platform_account_service)
+    public function __construct(PlatformAccountService $platform_account_service, WordpressService $wordpress_service)
     {
         $this->platform_account_service = $platform_account_service;
+        $this->wordpress_service = $wordpress_service;
     }
 
     public function checkPlatformAccount(Request $request)
     {
-        $user_uuid = $request->get('uuid', $this->uuid);
-        if (empty($user_uuid)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'UUID Required.'
-            ]);
-        }
-        $user_uuid = ''; // TEST
-        $platform_account = $this->platform_account_service->findByUUID($user_uuid);
+        $platform_account_id = 1;
+        $platform_account = $this->platform_account_service->findByID($platform_account_id);
         if (!empty($platform_account)) {
             return response()->json([
                 'success' => false,
@@ -55,13 +51,13 @@ class WordpressController extends Controller
 
             $platform_account = [
                 'uuid' => $uuid,
-                'platform_name' => 'wordpress',
+                'platform_name' => PlatformAccount::PLATFORM_WORDPRESS,
                 'username' => $validated_data['wordpress_username'],
                 'api_key' => $validated_data['wordpress_api_key'],
-                'password' => rtrim($validated_data['wordpress_url'], '\/\\'),
+                'url' => rtrim($validated_data['wordpress_url'], '\/\\'),
             ];
 
-            if (!$this->checkAccessWordpress($platform_account['password'], $platform_account['username'], $platform_account['api_key'])) {
+            if (!$this->checkAccessWordpress($platform_account['url'], $platform_account['username'], $platform_account['api_key'])) {
                 return response()->json([
                     'success' => false,
                     'message' => 'URL, USR, PWD may be not correct.'
@@ -90,74 +86,24 @@ class WordpressController extends Controller
 
     private function checkAccessWordpress($wp_url, $wp_username, $wp_application_pwd)
     {
-        $url = rtrim($wp_url, '\/\\') . '/wp-json/wp/v2/plugins';
-
-        $authorization = base64_encode($wp_username . ':' . $wp_application_pwd);
-        $response = Http::withHeaders([
-            'Authorization' => 'Basic ' . $authorization,
-            'Content-Type' => 'application/json',
-        ])->get($url);
-
-        if ($response->successful()) {
-            $plugins = $response->json();
-
-            return $plugins != null;
-        } else {
-            return false;
-//            var_dump($response->status());
-//            echo "Có lỗi xảy ra: " . $response->body();
-        }
+        return $this->wordpress_service->checkAccessWordpress($wp_url, $wp_username, $wp_application_pwd);
     }
 
     public function publishArticle(Request $request)
     {
-        $user_uuid = $request->get('uuid', $this->uuid);
-        if (empty($user_uuid)) {
-            abort(403, 'Unauthorized action.');
-        }
+        $platform_account_id = 1;
 
-        $platform_account = $this->platform_account_service->findByUUID($user_uuid);
+        $platform_account = $this->platform_account_service->findByID($platform_account_id);
         if (empty($platform_account)) {
             abort(403, 'Unauthorized action.');
         }
 
         $faker = fake('ja_jp');
+        $title = ucwords($faker->realTextBetween(10, 30));
+        $content = $faker->realTextBetween(200, 400);
 
-        // status: publish, future, draft, pending, and private
-        $article_payload = [
-            'title' => ucwords($faker->realTextBetween(10, 30)),
-            'status' => 'publish',
-            'slug' => $faker->slug(),
-            'content' => $faker->realTextBetween(200, 400)
-        ];
+        $resp = $this->wordpress_service->publishArticle($platform_account, $title, $content);
 
-        $wp_url = rtrim($platform_account->password, '\/\\') . '/wp-json/wp/v2/posts/';
-        $authorization = base64_encode($platform_account->username . ':' . $platform_account->api_key);
-        $response = Http::withHeaders([
-            'Authorization' => 'Basic ' . $authorization,
-            'Content-Type' => 'application/json',
-        ])
-            ->post($wp_url, $article_payload);
-
-        if ($response->successful()) {
-            $article = $response->json();
-
-            if (!$article) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Article not exists after publishing.'
-                ]);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Article published.'
-            ]);
-        } else {
-            return $response->json([
-                'success' => false,
-                'message' => 'Something went wrong.'
-            ]);
-        }
+        return response()->json($resp);
     }
 }

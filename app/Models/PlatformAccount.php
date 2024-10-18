@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PlatformAccount extends Model
 {
     use SoftDeletes;
+    use Uuid;
 
     public $timestamps = true;
+
     protected $fillable = [
         'uuid',
         'platform_name',
@@ -18,4 +20,6 @@ class PlatformAccount extends Model
         'api_key',
         'password',
     ];
+
+    const PLATFORM_WORDPRESS = 'wordpress';
 }
