@@ -15,11 +15,15 @@
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
+    @include('partials.spinner')
     @yield('custom_css')
 </head>
 
 <body class="p_list">
     <div id="container" class="container">
+        <div id="overlay" class="overlay">
+            <div id="spinner" class="spinner"></div>
+        </div>
         <main class="p_post">
             @include('layouts.sidebar')
             <div class="ctRight">

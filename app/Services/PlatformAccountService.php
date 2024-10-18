@@ -14,6 +14,11 @@ class PlatformAccountService
         $this->platform_account_repository = $platform_account_repository;
     }
 
+    public function findByID($id)
+    {
+        return $this->platform_account_repository->findByID($id);
+    }
+
     public function findByUUID($uuid)
     {
         return $this->platform_account_repository->findByUUID($uuid);
@@ -28,9 +33,8 @@ class PlatformAccountService
 //            DB::commit();
             return $response;
         } catch (\Exception $e) {
-//            var_dump($e->getMessage());
-//            DB::rollBack();
-//            logger()->error(sprintf("PlatformAccountService@store %s", $e->getMessage() . PHP_EOL . $e->getTraceAsString()));
+            //            DB::rollBack();
+            trackError('PlatformAccountService@store: ' . $e->getMessage());
 
             return false;
         }

@@ -78,7 +78,7 @@
                                 <dl>
                                     <dt>アイキャッチ画像</dt>
                                     <dd>
-                                        <button class="btn_create_img js_modal" data-modal="#modal01">アイキャッチ画像を生成</button>
+                                        <button class="btn_create_img js_modal js_create_img">アイキャッチ画像を生成</button>
                                         <p>50ポイントを使用</p>
                                     </dd>
                                 </dl>
@@ -129,9 +129,9 @@
     </div>
 @endsection
 @section('custom_modal')
-    <div id="modal01" class="modal">
+    <div id="modal01" class="modal js_modal_image">
         <figure>
-            <img src="{{ asset('img/dum2.png') }}" alt="">
+            <img class="js_img_render" src="{{ asset('img/dum2.png') }}" alt="">
         </figure>
     </div>
     <div id="scheduleModal" class="modal st3">
@@ -304,6 +304,7 @@
     </script>
     <script>
         var URL_UPDATE_BLOG_POST = "{{ route('post.ajax.updateBlogPost') }}";
+        var URL_RENDER_IMAGE_BLOG_POST = "{{ route('post.ajax.ajaxRenderImage') }}";
 
         $(document).ready(function() {
             $('.btn_preview').click(function() {
@@ -329,6 +330,17 @@
                 var scheduleTime = $(this).val();
                 console.log(scheduleTime);
             });
+            
+            $('.js_create_img').click(function() {
+                var content = tinymce.get('editor').getContent();
+                var data = {
+                    post_id: '{{ $post->id }}'
+                };
+
+                showSpinner();
+                renderImgBlogPost(data, content);
+            });
+
         });
 
         function updateBlogPost(data) {
@@ -349,6 +361,33 @@
                 },
                 complete: function() {
                     $('.loader-wrapper').remove();
+                }
+            });
+        }
+
+        function renderImgBlogPost(data) {
+            $.ajax({
+                url: URL_RENDER_IMAGE_BLOG_POST,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: data,
+                success: function(response) {
+                    if (response.status == 'success') {
+
+                        var file_url = response.file_url;
+                        // location.reload();
+                        $('.js_modal_image').modal('show');
+                        $('.js_img_render').attr('src', response.file_url);
+
+                        var editor = tinymce.get('editor');
+
+                        // Append the image at the current cursor position
+                        editor.insertContent('<img width="1024px" height="1024px" src="' + file_url + '" alt="Image" />');
+                    }
+
+                    hideSpinner();
                 }
             });
         }
