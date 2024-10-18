@@ -1945,11 +1945,12 @@ a.btn_back::before {
 }
 
 .modal a.close-modal {
-  background-image: url(../img/ic_close.svg);
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
+    background-image: url(../img/ic_close.svg);
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+}
 .text-danger {
     color: red;
 }

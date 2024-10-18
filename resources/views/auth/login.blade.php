@@ -14,7 +14,7 @@
                     <span>ログイン</span>
                     <small>アカウントをお持ちでない方は<a href="{{ route('register') }}">新規登録</a></small>
                 </p>
-                <input type="email" name="email" placeholder="メールアドレス*">
+                <input type="email" name="email" value="{{ old('email') ?? '' }}" placeholder="メールアドレス*">
                 @if ($errors->has('email'))
                     <span class="text-danger">{{ $errors->first('email') }}</span>
                 @endif

@@ -33,6 +33,6 @@
             </figure>
             <span>User Name</span>
         </div>
-        <a class="btn_setting" href="#"></a>
+        <a class="btn_setting" href="{{ route('auth.logout') }}"></a>
     </div>
 </aside>

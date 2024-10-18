@@ -27,13 +27,13 @@ use \App\Http\Controllers\Auth\AuthenticatorController;
 //     Route::resource('dashboard', BlogPostController::class);
 // });
 
-// Route::auth();
+Route::auth();
 
 Route::get('/', function () {
     return redirect()->route('post.dashboard');
 })->name('home');
 
-Route::prefix('post')->group(function () {
+Route::group(['prefix'=>'post', 'middleware' => ['auth']], function () {
     Route::get('/dashboard', [BlogPostController::class, 'dashboard'])->name('post.dashboard');
     Route::get('/create', [BlogPostController::class, 'create'])->name('post.create');
     Route::get('/create/{id}', [BlogPostController::class, 'edit'])->name('post.edit');
@@ -72,7 +72,7 @@ Route::prefix('post')->group(function () {
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
 //Route::post('/login', [AuthenticatorController::class, 'loginValidate'])->name('auth.login');
-//Route::get('/login', [AuthenticatorController::class, 'signin'])->name('login');
+Route::get('/logout', [AuthenticatorController::class, 'logout'])->name('auth.logout');
 
 Route::get('/error', function () {
     return view('errors.error', ['error' => 'Unable to load page']);

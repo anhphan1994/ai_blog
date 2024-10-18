@@ -25,7 +25,8 @@ class UserRequest extends FormRequest
  {
         return [
             'email' => 'required|email|max:255|unique:users,email',
-            'password'=> 'required',
+            'password'=> 'required|required_with:password_confirm|same:password_confirm',
+            'password_confirm'=> 'required',
         ];
 
     }
