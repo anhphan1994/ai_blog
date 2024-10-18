@@ -8,6 +8,7 @@ use App\Repositories\BlogPostRepository;
 use App\Services\AIService;
 use App\Services\APIService;
 use App\Services\BlogPostService;
+use App\Services\WordpressService;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as AuthUser;
@@ -19,12 +20,26 @@ class BlogPostController extends Controller
     protected $service;
     protected $ai_service;
     protected $api_service;
-
-    public function __construct(BlogPostService $service, AIService $ai_service, APIService $api_service)
+    protected $wordpress_service;
+    public function __construct(
+        BlogPostService $service, 
+        AIService $ai_service, 
+        APIService $api_service,
+        WordpressService $wordpress_service
+    )
     {
         $this->service = $service;
         $this->ai_service = $ai_service;
         $this->api_service = $api_service;
+        $this->wordpress_service = $wordpress_service;
+    }
+
+    public function index(Request $request)
+    {
+       
+        $first_platform_info = $this->wordpress_service->getPlatformAccounts(Auth::id())->first();
+
+        return redirect()->route('post.dashboard', ['platform_id' => $first_platform_info->id]);
     }
 
     public function dashboard(Request $request)
@@ -35,13 +50,16 @@ class BlogPostController extends Controller
 
             trackInfo('Loading blog posts for platform', ['platform_id' => $platform_id]);
 
-            return view('blog_posts.list', compact('platform_id'));
+            $platform_info = $this->wordpress_service->getPlatformAccountById($platform_id);
+
+            return view('blog_posts.list', compact('platform_info'));
+
         } catch (\Exception $e) {
             trackError('Error loading dashboard', ['error' => $e->getMessage()]);
             return redirect()->route('error.page')->with('error', 'Unable to load dashboard');
         }
-
     }
+
 
     public function ajaxListPost(Request $request)
     {
@@ -98,10 +116,10 @@ class BlogPostController extends Controller
         Log::info('Creating post', ['data' => $data]);
         //create post auto save then redirect to edit post
         $post = $this->service->createPost($data);
-        return redirect()->route('post.edit', ['id' => $post->id]);
+        return redirect()->route('post.edit', ['id' => $post->id, 'platform_id' => $platform_id]);
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         Log::info('Editing post', ['post_id' => $id]);
         $post = $this->service->getPostById($id);
@@ -152,11 +170,12 @@ class BlogPostController extends Controller
         }
     }
 
-    public function duplicate($id)
+    public function duplicate(Request $request,$id)
     {
+        $platform_id = $request->get('platform_id') ?? null;
         Log::info('Duplicating post', ['post_id' => $id]);
         $post = $this->service->duplicatePost($id);
-        return redirect()->route('post.dashboard');
+        return redirect()->route('post.dashboard', ['platform_id' => $platform_id]);
     }
 
     public function ajaxGeneratePost(Request $request)
@@ -173,7 +192,7 @@ class BlogPostController extends Controller
             $params = [
                 'short_description' => "APEXの競技シーンとヴァロラントの競技シーンの比較",
                 'post_style' => "同じプロゲーマーとしての目線",
-                'section_number' => "4",
+                'section_number' => "5",
                 'keywords' => "Laz選手とImperial hal選手",
             ];
 

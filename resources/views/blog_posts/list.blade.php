@@ -4,8 +4,8 @@
         <div class="row">
             <div class="list_head">
                 <p>
-                    <span>マイキャンプブログA</span>
-                    <a target="_blank" href="https://mycamp-a.blog">https://mycamp-a.blog</a>
+                    <span>{{$platform_info->username}}</span>
+                    <a target="_blank" href="{{$platform_info->url}}">{{$platform_info->url}}</a>
                 </p>
                 <div class="list_head_r">
                     <button class="btn_create_art">記事を作成</button>
@@ -82,6 +82,33 @@
             <a href="javascript:void(0);" rel="modal:close" class="close-modal">Close</a>
         </div>
     </div>
+
+    <div id="connectWPModal" class="modal st3">
+        <div class="form">
+            <h3 class="ttl tac">Wordpress連携</h3>
+            <dl>
+                <dt>WordPress URL</dt>
+                <dd>
+                    <input type="text" placeholder="https://webmaster+blog.com" id="platform_url">
+                </dd>
+            </dl>
+            <dl>
+                <dt>ユーザー名</dt>
+                <dd>
+                    <input type="text" placeholder="admin" id="platform_username">
+                </dd>
+            </dl>
+            <dl>
+                <dt>アプリケーションパスワード<img src="{{ asset('img/ic_question.svg') }}" alt=""></dt>
+                <dd>
+                    <p class="f_txt mb">※Wordpressアカウントのログインパスワードではありません。<br><a href="#"><strong>アプリケーションパスワード（API
+                                key）の取得方法はこちら</strong></a></p>
+                    <input type="text" id="platform_apiKey">
+                </dd>
+            </dl>
+            <button class="btn" id="createPlatformAccount">連携する</button>
+        </div>
+    </div>
 @endsection
 @section('custom_js')
     <script>
@@ -93,11 +120,19 @@
         var URL_DELETE_POST = "{{ route('post.ajax.delete', '') }}";
         var URL_DELETE_MULTI_POSTS = "{{ route('post.ajax.delete.multi') }}";
         var URL_PREVIEW_POST = "{{ route('post.ajax.preview') }}";
-        var URL_CREATE_POST = "{{ route('post.create') }}";
-
+        var URL_CREATE_POST = "{{ route('post.create', ['platform_id' => request()->platform_id]) }}";
+        var URL_CREATE_PLATFORM = "{{ route('wordpress.createPlatformAccount') }}";
         var status, period;
 
         $(function() {
+
+            var platform_info = @json($platform_info);
+            if (Object.keys(platform_info).length === 0) {
+                $('#connectWPModal').modal({
+                    fadeDuration: 200
+                });
+            }
+
             status = 'all';
             period = 'all';
 
@@ -126,7 +161,7 @@
 
             $(document).on('click', '.action li.duplicate', function() {
                 var id = $(this).data('id');
-                window.location.href = URL_DUPPLICATE_POST + '/' + id;
+                window.location.href = URL_DUPPLICATE_POST + '/' + id + '?platform_id={{$platform_info->id}}';
             });
 
             $(document).on('click', '.action li.del', function() {
@@ -170,6 +205,14 @@
             $(document).on('click', '.btn_create_art', function() {
                 window.location.href = URL_CREATE_POST;
             });
+
+            $(document).on('click', '#createPlatformAccount', function() {
+                var platform_url = $('#platform_url').val();
+                var platform_username = $('#platform_username').val();
+                var platform_apiKey = $('#platform_apiKey').val();
+
+                createPlatformAccount(platform_url, platform_username, platform_apiKey);
+            });
         });
 
         function getBlogPosts() {
@@ -184,7 +227,8 @@
                 },
                 data: {
                     status: status ?? 'all',
-                    period: period ?? 'all'
+                    period: period ?? 'all',
+                    platform_id: '{{$platform_info->id}}'
                 },
                 success: function(response) {
                     $('#blog_posts_list').html(response.html);
@@ -257,6 +301,32 @@
                 success: function(response) {
                     alert('Selected posts have been deleted successfully.');
                     location.reload();
+                }
+            });
+        }
+
+        function createPlatformAccount(platform_url, platform_username, platform_apiKey) {
+            $.ajax({
+                url: URL_CREATE_PLATFORM,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    wordpress_url: platform_url,
+                    wordpress_username: platform_username,
+                    wordpress_api_key: platform_apiKey
+                },
+                beforeSend: function() {
+                    $('body').append('<div class="loader-wrapper"><div class="loader"></div></div>');
+                },
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    }
+                },
+                complete: function() {
+                    $('.loader-wrapper').remove();
                 }
             });
         }

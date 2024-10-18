@@ -57,6 +57,7 @@ class WordpressController extends Controller
                 'url' => rtrim($validated_data['wordpress_url'], '\/\\'),
             ];
 
+
             if (!$this->checkAccessWordpress($platform_account['url'], $platform_account['username'], $platform_account['api_key'])) {
                 return response()->json([
                     'success' => false,

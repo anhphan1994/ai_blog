@@ -71,7 +71,7 @@
                                         @endphp
                                         <select id="section_number">
                                             @foreach ($section_number as $value)
-                                                <option value="{{ $value }}">{{ $value }}</option>
+                                                <option value="{{ $value }}" @if($value = 4) selected @endif>{{ $value }}</option>
                                             @endforeach
                                         </select>
                                     </label>
@@ -100,7 +100,8 @@
                 <span>記事生成を開始しました</span>
             </h3>
             <p class="m_txt">完了までしばらくお待ちください。記事作成中もダッシュボードへ戻ったり、他の作業を行うことができます。</p>
-            <a href="{{route('post.dashboard')}}" class="m_btn">ダッシュボードへ戻る</a>
+            <a href="{{route('post.dashboard', ['platform_id' => request()->platform_id])}}" 
+            class="m_btn">ダッシュボードへ戻る</a>
         </div>
     </div>
 @endsection

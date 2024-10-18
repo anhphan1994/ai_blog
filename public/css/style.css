@@ -1984,3 +1984,12 @@ a.btn_back::before {
 #toggleButton {
     cursor: pointer;
 }
+
+.user_name{
+  max-width: 150px;
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+}

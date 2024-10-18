@@ -19,6 +19,7 @@ class PlatformAccount extends Model
         'username',
         'api_key',
         'password',
+        'url',
     ];
 
     const PLATFORM_WORDPRESS = 'wordpress';

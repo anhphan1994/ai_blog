@@ -72,7 +72,7 @@ class AuthenticatorController extends Controller
             // send mail
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
-                return redirect()->route('dashboard');
+                return redirect()->route('home');
             }
         }
 
@@ -89,7 +89,7 @@ class AuthenticatorController extends Controller
                 $user->save();
                 Auth::login($user);
             }
-            return redirect()->route('dashboard');
+            return redirect()->route('home');
         } catch (\Throwable $th) {
             return redirect()->route('login');
         }

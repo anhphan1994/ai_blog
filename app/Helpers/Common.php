@@ -1,4 +1,5 @@
 <?php
+use App\Services\WordpressService;
 
 if (!function_exists('trackInfo')) {
     function trackInfo(string $message, array $context = []): void
@@ -67,5 +68,15 @@ if (!function_exists('getStatusClass')) {
                 break;
         }
         return $statusClass;
+    }
+}
+
+//get platform account name by id
+if (!function_exists('getPlatformAccountName')) {
+    function getPlatformAccountName()
+    {
+        $wordpress_service = app(WordpressService::class);
+        $platform_accounts = $wordpress_service->getPlatformAccounts(Auth::id());
+        return $platform_accounts;
     }
 }

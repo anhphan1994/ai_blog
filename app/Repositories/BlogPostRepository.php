@@ -6,6 +6,7 @@ use App\Models\BlogPost;
 use App\Models\BlogPostHistory;
 use App\Models\BlogPostParameter;
 use App\Models\Media;
+use App\Models\PostPlatform;
 use App\Models\SeoSetting;
 use App\Repositories\Interfaces\BlogPostRepositoryInterface;
 use Illuminate\Support\Facades\Log;
@@ -64,6 +65,11 @@ class BlogPostRepository implements BlogPostRepositoryInterface
             'user_id' => $created->user_id,
         ]);
 
+        $this->createPostPlatform([
+            'blog_post_id' => $created->id,
+            'platform_account_id' => $data['platform_id'],
+        ]);
+
         return $created;
     }
 
@@ -93,6 +99,11 @@ class BlogPostRepository implements BlogPostRepositoryInterface
     public function createHistory($data)
     {
         return BlogPostHistory::create($data);
+    }
+
+    public function createPostPlatform($data)
+    {
+        return PostPlatform::firstOrCreate($data);
     }
 
     public function getAllStatus()

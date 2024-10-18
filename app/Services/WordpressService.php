@@ -3,12 +3,21 @@
 namespace App\Services;
 
 use App\Models\PlatformAccount;
+use App\Repositories\Interfaces\PlatformAccountRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class WordpressService
 {
+
+    protected $platformAccountRepository;
+
+    public function __construct(PlatformAccountRepositoryInterface $platformAccountRepository)
+    {
+        $this->platformAccountRepository = $platformAccountRepository;
+    }
+
     public function testPublishArticle()
     {
         $faker = fake('ja_jp');
@@ -85,5 +94,15 @@ class WordpressService
                 'message' => $e->getMessage()
             ];
         }
+    }
+
+    public function getPlatformAccounts($user_id)
+    {
+        return $this->platformAccountRepository->getPlatformAccounts($user_id);
+    }
+
+    public function getPlatformAccountById($platform_id)
+    {
+        return $this->platformAccountRepository->getPlatformAccountById($platform_id);
     }
 }

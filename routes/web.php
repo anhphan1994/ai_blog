@@ -17,24 +17,12 @@ use \App\Http\Controllers\Auth\AuthenticatorController;
 |
 */
 
-
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/', function () {
-//         return redirect()->route('post.dashboard');
-//     })->name('home');
-//     Route::resource('blog-posts', BlogPostController::class);
-//     Route::resource('home', BlogPostController::class);
-//     Route::resource('dashboard', BlogPostController::class);
-// });
-
 Route::auth();
 
-Route::get('/', function () {
-    return redirect()->route('post.dashboard');
-})->name('home');
+Route::get('/', action: [BlogPostController::class, 'index'])->name('home');
 
 Route::group(['prefix'=>'post', 'middleware' => ['auth']], function () {
-    Route::get('/dashboard', [BlogPostController::class, 'dashboard'])->name('post.dashboard');
+    Route::get('/dashboard', action: [BlogPostController::class, 'dashboard'])->name('post.dashboard');
     Route::get('/create', [BlogPostController::class, 'create'])->name('post.create');
     Route::get('/create/{id}', [BlogPostController::class, 'edit'])->name('post.edit');
     Route::get('/show/{id}', [BlogPostController::class, 'show'])->name('post.show');
@@ -62,13 +50,9 @@ Route::group(['prefix'=>'post', 'middleware' => ['auth']], function () {
     Route::post('/ajax-update-tag', [BlogPostController::class, 'ajaxUpdateTag'])->name('post.ajax.updateTag');
     Route::post('/ajax-render-image', [BlogPostController::class, 'ajaxRenderImage'])->name('post.ajax.ajaxRenderImage');
 
-    Route::group(['middleware' => [
-//        'ajax'
-    ]], function () {
-        Route::get('/check-wordpress-account', [WordpressController::class, 'checkPlatformAccount'])->name('wordpress.checkWordpressAccount');
-        Route::get('/create-platform-account', [WordpressController::class, 'createPlatformAccount'])->name('wordpress.createPlatformAccount');
-        Route::get('/publish-to-wordpress', [WordpressController::class, 'publishArticle'])->name('wordpress.publishToWordpress');
-    });
+    Route::post('/create-platform-account', [WordpressController::class, 'createPlatformAccount'])->name('wordpress.createPlatformAccount');
+    Route::get('/check-wordpress-account', [WordpressController::class, 'checkPlatformAccount'])->name('wordpress.checkWordpressAccount');
+    Route::post('/publish-to-wordpress', [WordpressController::class, 'publishArticle'])->name('wordpress.publishToWordpress');
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
