@@ -45,4 +45,19 @@
     @yield('custom_js')
 </body>
 @yield('custom_modal')
+    <script type="text/javascript">
+        const toggleButton = document.getElementById('toggleButton');
+        console.log(toggleButton);
+        const menu = document.getElementById('menu');
+
+        toggleButton.addEventListener('click', function() {
+            menu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!toggleButton.contains(event.target) && !menu.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
+    </script>
 </html>

@@ -1,0 +1,3 @@
+<div>
+    password: {{ $password }}
+</div>

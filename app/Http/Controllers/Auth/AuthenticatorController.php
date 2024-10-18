@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Mail\ForgotPasswordMail;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\UserRepository;
@@ -95,9 +96,38 @@ class AuthenticatorController extends Controller
 
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function logout()
     {
         Auth::logout();
+        return redirect('/login');
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function forgot()
+    {
+        return view('auth.forgot');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = $this->userRepository->getByEmail($request->email);
+        if ($user) {
+            $newPass = Str::random(10);
+            $user = $this->userRepository->updateNewPassword($user, $newPass);
+            if ($user) {
+                Mail::to($request->email)->send(new ForgotPasswordMail($newPass));
+            }
+        }
+
         return redirect('/login');
     }
 }
