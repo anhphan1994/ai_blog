@@ -34,7 +34,7 @@ class WordpressService
 
             return $plugins != null;
         } else {
-            trackError('WordpressService@CheckAccessWordpress: Somethong went wrong', compact($wp_url, $wp_username, $wp_application_pwd));
+            trackError('WordpressService@CheckAccessWordpress: Access to Wordpress Host failed!', compact('wp_url','wp_username','wp_application_pwd'));
 
             return false;
         }
