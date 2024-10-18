@@ -206,7 +206,7 @@ class BlogPostController extends Controller
         Log::info('Showing post result', ['post_id' => $id]);
         $post = $this->service->getPostById($id);
         $auth_user = AuthUser::user();
-        $writer_article = $auth_user ? $auth_user->write_article : 1;
+        $writer_article = $auth_user ? $auth_user->writer_article : 1;
         $tags = Cache::remember($writer_article, now()->addHours(config('constant.cache_remember_hour')), function() use ($writer_article) {
             return $this->api_service->getTags($writer_article);
         });
