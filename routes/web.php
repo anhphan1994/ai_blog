@@ -72,7 +72,8 @@ Route::group(['prefix'=>'post', 'middleware' => ['auth']], function () {
 });
 //Route::get('/register', [AuthenticatorController::class, 'signUp'])->name('register');
 Route::post('/register', [AuthenticatorController::class, 'register'])->name('auth.register');
-//Route::post('/login', [AuthenticatorController::class, 'loginValidate'])->name('auth.login');
+Route::get('/forgot', [AuthenticatorController::class, 'forgot'])->name('auth.showForgot');
+Route::post('/forgot', [AuthenticatorController::class, 'resetPassword'])->name('auth.forgot');
 Route::get('/logout', [AuthenticatorController::class, 'logout'])->name('auth.logout');
 
 Route::get('/error', function () {

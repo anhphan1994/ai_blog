@@ -1954,3 +1954,33 @@ a.btn_back::before {
 .text-danger {
     color: red;
 }
+
+#menu {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 240px;
+    margin-bottom: 70px;
+}
+
+#logoutButton {
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#menu.show {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+#toggleButton {
+    cursor: pointer;
+}

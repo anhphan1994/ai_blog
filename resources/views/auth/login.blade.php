@@ -25,7 +25,7 @@
                 @if ($errors->has('password'))
                     <span class="text-danger">{{ $errors->first('password') }}</span>
                 @endif
-                <p class="f_txt"><a href="">パスワードをお忘れですか？</a></p>
+                <p class="f_txt"><a href="{{ route('auth.showForgot') }}">パスワードをお忘れですか？</a></p>
                 <button class="btn st2">ログイン</button>
             </form>
         </div>

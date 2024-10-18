@@ -33,6 +33,10 @@
             </figure>
             <span>User Name</span>
         </div>
-        <a class="btn_setting" href="{{ route('auth.logout') }}"></a>
+        <a class="btn_setting" id="toggleButton"></a>
+        <div id="menu" class="hidden">
+            <a id="logoutButton" href="{{ route('auth.logout') }}">Logout</a>
+{{--            <button id="logoutButton">Logout</button>--}}
+        </div>
     </div>
 </aside>
