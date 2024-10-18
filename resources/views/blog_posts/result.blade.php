@@ -122,10 +122,14 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 beforeSend: function() {
+                    $('body').append('<div class="loader-wrapper"><div class="loader"></div></div>');
                     $('#title_value').val('生成中...');
                 },
                 success: function(data) {
                     $('#title_value').val(data.title);
+                },
+                complete: function() {
+                    $('.loader-wrapper').remove();
                 }
             });
         }
@@ -139,6 +143,7 @@
                     title: $('#title_value').val(),
                 },
                 beforeSend: function() {
+                    $('body').append('<div class="loader-wrapper"><div class="loader"></div></div>');
                     $('#outline_value').val('生成中...');
                 },
                 headers: {
@@ -146,6 +151,9 @@
                 },
                 success: function(data) {
                     $('#outline_value').val(data.outline);
+                },
+                complete: function() {
+                    $('.loader-wrapper').remove();
                 }
             });
         }
@@ -170,6 +178,7 @@
                     tags: tagsList,
                 },
                 beforeSend: function() {
+                    $('body').append('<div class="loader-wrapper"><div class="loader"></div></div>');
                     $('#content_value').val('生成中...');
                 },
                 headers: {
@@ -177,6 +186,9 @@
                 },
                 success: function(data) {
                     $('#content_value').val(data.content);
+                },
+                complete: function() {
+                    $('.loader-wrapper').remove();
                 }
             });
         }
@@ -201,6 +213,9 @@
                     content: content,
                     tags: tagsList,
                 },
+                beforeSend: function() {
+                    $('body').append('<div class="loader-wrapper"><div class="loader"></div></div>');
+                },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -208,6 +223,9 @@
                     if (data.status == 'success') {
                         window.location.href = '{{ route('post.postSetting', $post->id) }}';
                     }
+                },
+                complete: function() {
+                    $('.loader-wrapper').remove();
                 }
             });
         }

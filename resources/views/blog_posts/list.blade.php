@@ -82,7 +82,6 @@
             <a href="javascript:void(0);" rel="modal:close" class="close-modal">Close</a>
         </div>
     </div>
-    <div class="loader"></div>
 @endsection
 @section('custom_js')
     <script>
@@ -180,6 +179,9 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                beforeSend: function() {
+                    $('body').append('<div class="loader-wrapper"><div class="loader"></div></div>');
+                },
                 data: {
                     status: status ?? 'all',
                     period: period ?? 'all'
@@ -187,6 +189,9 @@
                 success: function(response) {
                     $('#blog_posts_list').html(response.html);
                     $('#total_post').text(response.total_post);
+                },
+                complete: function() {
+                    $('.loader-wrapper').remove();
                 }
             });
         }

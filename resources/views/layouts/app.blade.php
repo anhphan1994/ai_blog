@@ -30,6 +30,14 @@
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/jquery.modal.min.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
+    <script>
+        //ajax setup
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+        });
+    </script>
     @yield('custom_js')
 </body>
 @yield('custom_modal')

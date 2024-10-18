@@ -38,24 +38,24 @@
                         <div class="ck_block_r">
                             <div class="blk01">
                                 <a class="btn_preview" href="javascript:void(0);">プレビュー</a>
-                                <button class="btn_scheduled">予約投稿</button>
+                                <button class="btn_scheduled" >予約投稿</button>
                             </div>
                             <div class="blk02">
                                 <dl>
                                     <dt>ステータス</dt>
-                                    <dd><a href="">下書き</a></dd>
+                                    <dd><a href="javascript:void(0);">下書き</a></dd>
                                 </dl>
                                 <dl>
                                     <dt>公開</dt>
-                                    <dd><a href="">10月31日 9:00 AM</a></dd>
+                                    <dd><a href="javascript:void(0);">10月31日 9:00 AM</a></dd>
                                 </dl>
                                 <dl>
                                     <dt>記事URL</dt>
-                                    <dd><a href="">/01</a></dd>
+                                    <dd><a href="javascript:void(0);">/01</a></dd>
                                 </dl>
                                 <dl>
                                     <dt>投稿者</dt>
-                                    <dd><a href="">管理人</a></dd>
+                                    <dd><a href="javascript:void(0);">管理人</a></dd>
                                 </dl>
                                 <p>単語数：580単語<br> 読了時間：約3分</p>
                             </div>
@@ -119,6 +119,32 @@
             <img src="{{ asset('img/dum2.png') }}" alt="">
         </figure>
     </div>
+    <div id="scheduleModal" class="modal st3">
+        <div class="form">
+            <h3 class="ttl tac">Wordpress連携</h3>
+            <dl>
+                <dt>WordPress URL</dt>
+                <dd>
+                    <input type="text" placeholder="https://webmaster+blog.com">
+                </dd>
+            </dl>
+            <dl>
+                <dt>ユーザー名</dt>
+                <dd>
+                    <input type="text" placeholder="admin">
+                </dd>
+            </dl>
+            <dl>
+                <dt>アプリケーションパスワード<img src="./img/ic_question.svg" alt=""></dt>
+                <dd>
+                    <p class="f_txt mb">※Wordpressアカウントのログインパスワードではありません。<br><a href="#"><strong>アプリケーションパスワード（API
+                                key）の取得方法はこちら</strong></a></p>
+                    <input type="text">
+                </dd>
+            </dl>
+            <button class="btn">連携する</button>
+        </div>
+    </div>
 @endsection
 @section('custom_js')
     <script src="https://cdn.tiny.cloud/1/tmi2sf2d52osils6xs1lfzzrg0pv4yommkrx0pmu9yak23v6/tinymce/6/tinymce.min.js"
@@ -158,8 +184,11 @@
                     post_id: '{{ $post->id }}',
                     source_from: 'seo_setting'
                 };
-
                 updateBlogPost(data);
+            });
+
+            $('.btn_scheduled').click(function() {
+                $('#scheduleModal').modal('show');
             });
         });
 
@@ -170,11 +199,17 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                beforeSend: function() {
+                    $('body').append('<div class="loader-wrapper"><div class="loader"></div></div>');
+                },
                 data: data,
                 success: function(response) {
                     if (response.status == 'success') {
                         location.reload();
                     }
+                },
+                complete: function() {
+                    $('.loader-wrapper').remove();
                 }
             });
         }
