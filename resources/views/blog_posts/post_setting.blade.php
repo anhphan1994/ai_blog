@@ -1,4 +1,19 @@
 @extends('layouts.app')
+@section('custom_css')
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css"
+        integrity="sha512-bYPO5jmStZ9WI2602V2zaivdAnbAhtfzmxnEGh9RwtlI00I9s8ulGe4oBa5XxiC6tCITJH/QG70jswBhbLkxPw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <style>
+            .btn_publish_now, .btn_schedule {
+                width: 49%;
+            }
+            .public-action {
+                display: flex;
+                justify-content: space-between;
+            }
+        </style>
+@endsection
 @section('content')
     <div class="post_ctn">
         <div class="post_top">
@@ -38,7 +53,7 @@
                         <div class="ck_block_r">
                             <div class="blk01">
                                 <a class="btn_preview" href="javascript:void(0);">プレビュー</a>
-                                <button class="btn_scheduled" >予約投稿</button>
+                                <button class="btn_scheduled">予約投稿</button>
                             </div>
                             <div class="blk02">
                                 <dl>
@@ -121,32 +136,42 @@
     </div>
     <div id="scheduleModal" class="modal st3">
         <div class="form">
-            <h3 class="ttl tac">Wordpress連携</h3>
+            <h3 class="ttl tac">
+                投稿を予約する
+            </h3>
             <dl>
-                <dt>WordPress URL</dt>
+                <dt>
+                    公開時間
+                </dt>
                 <dd>
-                    <input type="text" placeholder="https://webmaster+blog.com">
+                    <input type="text" id="scheduleTime" />
                 </dd>
             </dl>
             <dl>
-                <dt>ユーザー名</dt>
+                <dt>ステータス</dt>
                 <dd>
-                    <input type="text" placeholder="admin">
+                    <div class="select">
+                        <label>
+                            <select name="" id="publicStatus">
+                                <option value="">下書き</option>
+                                <option value="">公開</option>
+                            </select>
+                        </label>
+                    </div>
                 </dd>
             </dl>
-            <dl>
-                <dt>アプリケーションパスワード<img src="./img/ic_question.svg" alt=""></dt>
-                <dd>
-                    <p class="f_txt mb">※Wordpressアカウントのログインパスワードではありません。<br><a href="#"><strong>アプリケーションパスワード（API
-                                key）の取得方法はこちら</strong></a></p>
-                    <input type="text">
-                </dd>
+            
+            <dl class="public-action">
+                <button class="btn btn_publish_now">今すぐ公開</button>
+                <button class="btn btn_schedule">予約する</button>
             </dl>
-            <button class="btn">連携する</button>
         </div>
     </div>
 @endsection
 @section('custom_js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+        integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.tiny.cloud/1/tmi2sf2d52osils6xs1lfzzrg0pv4yommkrx0pmu9yak23v6/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
@@ -167,6 +192,114 @@
                     callback(url);
                 }
             }
+        });
+
+        $(document).ready(function() {
+            $('#scheduleTime').datetimepicker({
+
+                ownerDocument: document,
+                contentWindow: window,
+
+                value: '',
+                rtl: false,
+
+                format: 'Y/m/d H:i',
+                formatTime: 'H:i',
+                formatDate: 'Y/m/d',
+
+                // new Date(), '1986/12/08', '-1970/01/05','-1970/01/05',
+                startDate: false,
+
+                step: 60,
+                monthChangeSpinner: true,
+
+                closeOnDateSelect: false,
+                closeOnTimeSelect: true,
+                closeOnWithoutClick: true,
+                closeOnInputClick: true,
+                openOnFocus: true,
+
+                timepicker: true,
+                datepicker: true,
+                weeks: false,
+
+                // use formatTime format (ex. '10:00' for formatTime: 'H:i')
+                defaultTime: false,
+
+                // use formatDate format (ex new Date() or '1986/12/08' or '-1970/01/05' or '-1970/01/05')
+                defaultDate: false,
+
+                minDate: false,
+                maxDate: false,
+                minTime: false,
+                maxTime: false,
+                minDateTime: false,
+                maxDateTime: false,
+
+                allowTimes: [],
+                opened: false,
+                initTime: true,
+                inline: false,
+                theme: '',
+                touchMovedThreshold: 5,
+
+                // callbacks
+                onSelectDate: function() {},
+                onSelectTime: function() {},
+                onChangeMonth: function() {},
+                onGetWeekOfYear: function() {},
+                onChangeYear: function() {},
+                onChangeDateTime: function() {},
+                onShow: function() {},
+                onClose: function() {},
+                onGenerate: function() {},
+
+                withoutCopyright: true,
+                inverseButton: false,
+                hours12: false,
+                next: 'xdsoft_next',
+                prev: 'xdsoft_prev',
+                dayOfWeekStart: 0,
+                parentID: 'body',
+                timeHeightInTimePicker: 25,
+                timepickerbar: true,
+                todayButton: true,
+                prevButton: true,
+                nextButton: true,
+                defaultSelect: true,
+
+                scrollMonth: true,
+                scrollTime: true,
+                scrollInput: true,
+
+                lazyInit: false,
+                mask: false,
+                validateOnBlur: true,
+                allowBlank: true,
+                yearStart: 1950,
+                yearEnd: 2050,
+                monthStart: 0,
+                monthEnd: 11,
+                style: '',
+                id: '',
+                fixed: false,
+                roundTime: 'round', // ceil, floor
+                className: '',
+                weekends: [],
+                highlightedDates: [],
+                highlightedPeriods: [],
+                allowDates: [],
+                allowDateRe: null,
+                disabledDates: [],
+                disabledWeekDays: [],
+                yearOffset: 0,
+                beforeShowDay: null,
+
+                enterLikeTab: true,
+                showApplyButton: false,
+                insideParent: false,
+
+            });
         });
     </script>
     <script>
@@ -189,6 +322,12 @@
 
             $('.btn_scheduled').click(function() {
                 $('#scheduleModal').modal('show');
+            });
+
+            //scheduleTime get value on change
+            $('#scheduleTime').on('change', function() {
+                var scheduleTime = $(this).val();
+                console.log(scheduleTime);
             });
         });
 
