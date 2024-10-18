@@ -346,4 +346,34 @@ class BlogPostController extends Controller
             return response()->json(['message' => 'Tags updated', 'status' => 'success']);
         }
     }
+
+    public function ajaxRenderImage(Request $request)
+    {
+        if ($request->ajax()) {
+            $post_id = $request->get('post_id');
+
+            Log::info('AJAX render image requested', ['post_id' => $post_id]);
+
+            $post = $this->service->getPostById($post_id);
+            if ($post) {
+                $result = $this->api_service->renderImage($post->content);
+
+                if ($result) {
+
+                    $url = asset($result['file_path']);
+                    $media = [
+                        'blog_post_id' => $request->get('post_id'),
+                        'file_name' => $result['file_name'],
+                        'file_url' => $url,
+                        'file_type' => $result['file_type'],
+                    ];
+
+                    $this->service->createMedia($media);
+                    return response()->json(['status' => 'success', 'file_url' => $url]);
+                }
+            }
+
+            return response()->json(['message' => 'Tags updated', 'status' => 'fail']);
+        }
+    }
 }
