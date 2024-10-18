@@ -82,6 +82,7 @@
             <a href="javascript:void(0);" rel="modal:close" class="close-modal">Close</a>
         </div>
     </div>
+    <div class="loader"></div>
 @endsection
 @section('custom_js')
     <script>

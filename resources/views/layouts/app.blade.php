@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/jquery.modal.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
     @yield('custom_css')
 </head>
 
